@@ -1,4 +1,4 @@
-package it.chrccl.carrozzeriaonline.repository;
+package it.chrccl.carrozzeriaonline.repos;
 
 import it.chrccl.carrozzeriaonline.model.dao.Attachment;
 import it.chrccl.carrozzeriaonline.model.dao.Task;
