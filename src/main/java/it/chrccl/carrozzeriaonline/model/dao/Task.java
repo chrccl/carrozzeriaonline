@@ -21,6 +21,10 @@ public class Task {
 
     private Partner partner;
 
+    private TaskStatus status;
+
+    private Boolean isWeb;
+
     private Boolean accepted;
 
 }
