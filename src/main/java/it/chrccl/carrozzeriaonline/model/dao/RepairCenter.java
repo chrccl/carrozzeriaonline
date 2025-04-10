@@ -9,7 +9,7 @@ import lombok.Data;
 public class RepairCenter {
 
     @Id
-    private Integer id;
+    private Long id;
 
     private String companyName;
 
