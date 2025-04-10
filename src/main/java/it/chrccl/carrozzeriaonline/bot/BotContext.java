@@ -1,5 +1,6 @@
 package it.chrccl.carrozzeriaonline.bot;
 
+import it.chrccl.carrozzeriaonline.model.dao.Task;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,8 +10,11 @@ public class BotContext {
 
     private BotState currentState;
 
-    public BotContext(BotState initState) {
+    private Task task;
+
+    public BotContext(BotState initState, Task task) {
         currentState = initState;
+        this.task = task;
     }
 
     public void handle(String fromNumber, MessageData message) {
