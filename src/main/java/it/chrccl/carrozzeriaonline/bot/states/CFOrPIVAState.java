@@ -3,7 +3,9 @@ package it.chrccl.carrozzeriaonline.bot.states;
 import it.chrccl.carrozzeriaonline.bot.BotContext;
 import it.chrccl.carrozzeriaonline.bot.BotState;
 import it.chrccl.carrozzeriaonline.bot.MessageData;
+import org.springframework.stereotype.Component;
 
+@Component
 public class CFOrPIVAState implements BotState {
 
     @Override
