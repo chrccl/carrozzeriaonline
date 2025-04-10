@@ -1,4 +1,4 @@
-package it.chrccl.carrozzeriaonline.model;
+package it.chrccl.carrozzeriaonline.model.dao;
 
 import jakarta.persistence.Embeddable;
 import lombok.Data;
