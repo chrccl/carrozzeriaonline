@@ -3,6 +3,8 @@ package it.chrccl.carrozzeriaonline.model.dao;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.time.LocalDate;
+
 @Entity
 @Data
 public class Task {
@@ -18,6 +20,8 @@ public class Task {
     @ManyToOne
     @JoinColumn(name = "repair_center_id")
     private RepairCenter repairCenter;
+
+    private LocalDate accidentDate;
 
     private Partner partner;
 
