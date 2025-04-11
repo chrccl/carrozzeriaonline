@@ -36,12 +36,10 @@ public class EmailComponent {
     private void sendTaskNotification(String to, String subject, Map<String, Object> variables,
                                       List<Attachment> fileToAttach, String template) {
         log.info("Preparing email to: {} with subject: {}", to, subject);
-
         MimeMessagePreparator preparator = mimeMessage -> {
             mimeMessage.setRecipient(Message.RecipientType.TO, new InternetAddress(to));
             mimeMessage.setFrom(new InternetAddress("info@assistenza.carrozzeriaonline.com"));
             mimeMessage.setSubject(subject);
-
             log.debug("Setting up Thymeleaf context with variables: {}", variables.keySet());
 
             Context context = new Context();
@@ -64,7 +62,6 @@ public class EmailComponent {
                     multipart.addBodyPart(attachmentPart);
                 }
             }
-
             mimeMessage.setContent(multipart);
         };
 

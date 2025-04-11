@@ -21,8 +21,4 @@ public class BotContext {
         currentState.handleMessage(this, fromNumber, message);
     }
 
-    /**
-     * TODO: helpers methods common to the concrete states
-     */
-
 }
