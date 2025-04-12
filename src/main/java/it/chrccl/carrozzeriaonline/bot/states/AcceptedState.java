@@ -13,4 +13,14 @@ public class AcceptedState implements BotState {
         System.out.println("AcceptedState.handleMessage");
     }
 
+    @Override
+    public Boolean verifyMessage(MessageData data) {
+        return null;
+    }
+
+    @Override
+    public void handleError(BotContext context, String fromNumber, MessageData data) {
+
+    }
+
 }

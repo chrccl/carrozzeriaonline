@@ -47,40 +47,35 @@ public class TaskController {
      *
      */
     @PostMapping("/handleWhatsappMessage")
-    public ResponseEntity<String> sendWhatsappTest(
-            @RequestParam("From") String fromNumber,
-            @RequestParam("Body") String messageBody,
-            @RequestParam("NumMedia") Integer numMedia,
+    public ResponseEntity<String> sendWhatsappTest(@RequestParam("From") String fromNumber,
+            @RequestParam("Body") String messageBody, @RequestParam("NumMedia") Integer numMedia,
             @RequestParam(name = "MediaContentType0", required = false) String contentTypeAttachment,
             @RequestParam(name = "MediaUrl0", required = false) String mediaUrlAttachment) {
-        // Retrieve the ongoing task associated with this phone number (customize the retrieval as needed)
+        MessageData messageData = new MessageData(messageBody, numMedia, contentTypeAttachment, mediaUrlAttachment);
         Optional<Task> optionalTask = taskService.findOngoingTaskByPhoneNumber(fromNumber);
-        BotState botState;
         BotContext botContext;
+        BotState nextBotState;
         Task task;
+        Boolean errorOccurred;
         if (optionalTask.isPresent()) {
             task = optionalTask.get();
-            // Map the task's status to a corresponding FSM state.
-            botState = botStatesFactory.getStateFromTask(task);
+            BotState currentBotState = botStatesFactory.getStateFromTask(task);
+            errorOccurred = currentBotState.verifyMessage(messageData);
+            nextBotState = errorOccurred ? currentBotState : botStatesFactory.getNextStateFromTask(task);
         } else {
             task = Task.builder()
-                    .id(new TaskId(fromNumber, LocalDateTime.now()))
-                    .user(new User(fromNumber))
-                    .status(TaskStatus.INITIAL_STATE)
-                    .isWeb(false)
-                    .accepted(false)
+                    .id(new TaskId(fromNumber, LocalDateTime.now())).user(new User(fromNumber))
+                    .status(TaskStatus.INITIAL_STATE).isWeb(false).accepted(false)
                     .build();
-            // Fallback initial state if no ongoing task exists.
-            botState = botStatesFactory.getInitialState();
+            errorOccurred = false;
+            nextBotState = botStatesFactory.getInitialState();
         }
-        // Create the FSM context with the initial state and state factory.
-        botContext = new BotContext(botState, task);
-
-        // Wrap the request data into a MessageData object.
-        MessageData messageData = new MessageData(messageBody, numMedia, contentTypeAttachment, mediaUrlAttachment);
-        // Delegate the processing to the FSM.
-        botContext.handle(fromNumber, messageData);
-
+        botContext = new BotContext(nextBotState, task);
+        if (errorOccurred) {
+            botContext.handleError(fromNumber, messageData);
+        }else{
+            botContext.handle(fromNumber, messageData);
+        }
         return ResponseEntity.ok("Message processed successfully.");
     }
     

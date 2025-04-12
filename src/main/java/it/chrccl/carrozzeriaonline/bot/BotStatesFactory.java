@@ -55,14 +55,11 @@ public class BotStatesFactory {
         this.acceptedState = acceptedState;
     }
 
-    /**
-     * FACTORY METHOD
-     */
     public BotState getStateFromTask(Task task) {
         TaskStatus status = task.getStatus();
         return switch (status) {
-            case INITIAL_STATE -> initialState;
             case WEB           -> webState;
+            case INITIAL_STATE -> initialState;
             case MULTIMEDIA    -> multimediaState;
             case DATE          -> dateState;
             case FULL_NAME     -> fullNameState;
@@ -71,8 +68,28 @@ public class BotStatesFactory {
             case OTP           -> otpState;
             case CAP           -> capState;
             case CAR_REPAIR_CENTER -> carRepairCenterState;
-            case BOUNCING      -> bouncingState;
-            case ACCEPTED      -> acceptedState;
+            case BOUNCING -> bouncingState;
+            case ACCEPTED -> acceptedState;
+        };
+    }
+
+    /**
+     * FACTORY METHOD
+     */
+    public BotState getNextStateFromTask(Task task) {
+        TaskStatus status = task.getStatus();
+        return switch (status) {
+            case WEB           -> webState;
+            case INITIAL_STATE -> multimediaState;
+            case MULTIMEDIA    -> dateState;
+            case DATE          -> fullNameState;
+            case FULL_NAME     -> cfOrPIVAState;
+            case CF_OR_PIVA    -> carLicenseState;
+            case CAR_LICENSE   -> otpState;
+            case OTP           -> capState;
+            case CAP           -> carRepairCenterState;
+            case CAR_REPAIR_CENTER -> bouncingState;
+            case BOUNCING, ACCEPTED -> acceptedState;
         };
     }
 

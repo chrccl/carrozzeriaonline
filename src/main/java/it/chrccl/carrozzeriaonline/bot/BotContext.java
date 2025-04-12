@@ -21,4 +21,8 @@ public class BotContext {
         currentState.handleMessage(this, fromNumber, message);
     }
 
+    public void handleError(String fromNumber, MessageData message) {
+        currentState.handleError(this, fromNumber, message);
+    }
+
 }

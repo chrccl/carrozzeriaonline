@@ -12,4 +12,14 @@ public class WebState implements BotState {
     public void handleMessage(BotContext context, String fromNumber, MessageData data) {
         System.out.println("WebState.handleMessage");
     }
+
+    @Override
+    public Boolean verifyMessage(MessageData data) {
+        return null;
+    }
+
+    @Override
+    public void handleError(BotContext context, String fromNumber, MessageData data) {
+
+    }
 }

@@ -13,4 +13,14 @@ public class CAPState implements BotState {
         System.out.println("CAPState.handleMessage");
     }
 
+    @Override
+    public Boolean verifyMessage(MessageData data) {
+        return null;
+    }
+
+    @Override
+    public void handleError(BotContext context, String fromNumber, MessageData data) {
+
+    }
+
 }
