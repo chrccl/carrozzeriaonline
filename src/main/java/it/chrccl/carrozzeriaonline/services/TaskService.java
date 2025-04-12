@@ -2,6 +2,7 @@ package it.chrccl.carrozzeriaonline.services;
 
 import it.chrccl.carrozzeriaonline.model.dao.*;
 import it.chrccl.carrozzeriaonline.repos.TaskRepo;
+import it.chrccl.carrozzeriaonline.repos.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -9,15 +10,21 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class TaskService {
 
     private final TaskRepo repo;
 
+    private final UserRepo userRepo;
+
+    public static final List<TaskStatus> DEFAULT_EXCLUDED_STATUSES = List.of(TaskStatus.INITIAL_STATE, TaskStatus.WEB);
+
     @Autowired
-    public TaskService(TaskRepo repo) {
+    public TaskService(TaskRepo repo, UserRepo userRepo) {
         this.repo = repo;
+        this.userRepo = userRepo;
     }
 
     public List<Task> findAllTasks() {
@@ -32,6 +39,10 @@ public class TaskService {
         return repo.findTasksByUser(user, Sort.by(Sort.Direction.ASC, "dateTime"));
     }
 
+    public Optional<Task> findOngoingTaskByPhoneNumber(String fromNumber) {
+        return repo.findOngoingTaskByPhoneNumber(fromNumber, DEFAULT_EXCLUDED_STATUSES);
+    }
+
     public List<Task> findTasksByRepairCenter(RepairCenter rc) {
         return repo.findTasksByRepairCenter(rc, Sort.by(Sort.Direction.ASC, "dateTime"));
     }
@@ -42,6 +53,15 @@ public class TaskService {
     }
 
     public Task save(Task task) {
+        User taskUser = task.getUser();
+        Optional<User> existingUser = userRepo.findById(taskUser.getMobilePhone());
+
+        if (existingUser.isPresent()) {
+            task.setUser(existingUser.get());
+        } else {
+            userRepo.save(taskUser);
+        }
+
         return repo.save(task);
     }
 
