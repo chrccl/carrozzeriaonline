@@ -27,6 +27,10 @@ public class TwilioComponent {
         Twilio.init(ACCOUNT_SID, AUTH_TOKEN);
     }
 
+    public String getUserCredentials(){
+        return ACCOUNT_SID + ":" + AUTH_TOKEN;
+    }
+
     public Message sendMessage(PhoneNumber to, String body) {
         Message msg = Message.creator(to, MESSAGING_SID, body).create();
         log.info(msg.getSid());

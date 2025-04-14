@@ -61,7 +61,7 @@ public class TaskController {
         if (optionalTask.isPresent()) {
             task = optionalTask.get();
             BotState currentBotState = botStatesFactory.getStateFromTask(task);
-            errorOccurred = currentBotState.verifyMessage(messageData);
+            errorOccurred = currentBotState.verifyMessage(task, messageData);
             nextBotState = errorOccurred ? currentBotState : botStatesFactory.getNextStateFromTask(task);
         } else {
             task = Task.builder()
