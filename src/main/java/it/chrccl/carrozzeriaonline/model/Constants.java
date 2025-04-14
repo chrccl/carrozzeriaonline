@@ -36,6 +36,10 @@ public class Constants {
 
     public static final String BOT_CF_OR_PIVA_MESSAGE = "Scrivi il tuo *CODICE FISCALE* o *P. IVA*.";
 
+    public static final String BOT_FALLBACK_CF_OR_PIVA_MESSAGE = "Codice Fiscale o Partita IVA non riconosciuto. Riprova!";
+
+    public static final String BOT_CAR_LICENCE_MESSAGE = "Scrivi la *TARGA* della tua auto.";
+
 
 
     public static final String DATE_FORMAT = "dd/MM/yyyy";
