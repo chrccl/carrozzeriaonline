@@ -56,7 +56,7 @@ public class TaskService {
         User taskUser = task.getUser();
         Optional<User> existingUser = userRepo.findById(taskUser.getMobilePhone());
 
-        if (existingUser.isPresent()) {
+        if (existingUser.isPresent() && existingUser.get().equals(taskUser)) {
             task.setUser(existingUser.get());
         } else {
             userRepo.save(taskUser);

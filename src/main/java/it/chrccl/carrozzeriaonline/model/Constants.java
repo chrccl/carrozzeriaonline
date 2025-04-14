@@ -34,6 +34,8 @@ public class Constants {
 
     public static final String BOT_FULLNAME_MESSAGE = "Scrivi il tuo *NOME* e *COGNOME* in un unico messaggio.";
 
+    public static final String BOT_CF_OR_PIVA_MESSAGE = "Scrivi il tuo *CODICE FISCALE* o *P. IVA*.";
+
 
 
     public static final String DATE_FORMAT = "dd/MM/yyyy";
