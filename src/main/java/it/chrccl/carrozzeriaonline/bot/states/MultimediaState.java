@@ -1,7 +1,6 @@
 package it.chrccl.carrozzeriaonline.bot.states;
 
 import com.twilio.type.PhoneNumber;
-
 import it.chrccl.carrozzeriaonline.bot.BotContext;
 import it.chrccl.carrozzeriaonline.bot.BotState;
 import it.chrccl.carrozzeriaonline.bot.MessageData;
@@ -9,8 +8,9 @@ import it.chrccl.carrozzeriaonline.components.TwilioComponent;
 import it.chrccl.carrozzeriaonline.model.Constants;
 import it.chrccl.carrozzeriaonline.model.dao.Attachment;
 import it.chrccl.carrozzeriaonline.model.dao.Task;
+import it.chrccl.carrozzeriaonline.model.dao.TaskStatus;
 import it.chrccl.carrozzeriaonline.services.AttachmentService;
-
+import it.chrccl.carrozzeriaonline.services.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -29,10 +29,13 @@ public class MultimediaState implements BotState {
 
     private final AttachmentService attachmentService;
 
+    private final TaskService taskService;
+
     @Autowired
-    public MultimediaState(TwilioComponent twilio, AttachmentService attachmentService) {
+    public MultimediaState(TwilioComponent twilio, AttachmentService attachmentService, TaskService taskService) {
         this.twilio = twilio;
         this.attachmentService = attachmentService;
+        this.taskService = taskService;
     }
 
     @Override
@@ -40,9 +43,12 @@ public class MultimediaState implements BotState {
         Attachment attachment = getAttachment(context, data);
         if (attachment != null) attachmentService.save(attachment);
 
-        if(checkMinimumAttachmentsPerTask(context.getTask())){
+        if(checkMinimumAttachmentsPerTask(context.getTask()) && context.getTask().getStatus() == TaskStatus.MULTIMEDIA){
             PhoneNumber to = new PhoneNumber(fromNumber);
             twilio.sendMessage(to, Constants.BOT_DATE_MESSAGE);
+
+            context.getTask().setStatus(TaskStatus.DATE);
+            taskService.save(context.getTask());
         }
     }
 

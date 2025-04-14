@@ -14,6 +14,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
 import java.util.Base64;
 import java.util.stream.Collectors;
 
@@ -110,10 +111,11 @@ public class ImgBBComponent {
         try (PDDocument document = PDDocument.load(pdfFile)) {
             PDFRenderer pdfRenderer = new PDFRenderer(document);
             BufferedImage image = pdfRenderer.renderImageWithDPI(0, 300, ImageType.RGB);
-            File outputFile = new File("/opt/tomcat/", fileName + ".png");
+            Path path = Path.of(pdfFilePath);
+            File outputFile = new File(path.getParent().toString(), fileName + ".png");
             ImageIO.write(image, "PNG", outputFile);
             System.out.println("Saved: " + outputFile.getAbsolutePath());
-            return "/opt/tomcat/" + fileName + ".png";
+            return path.getParent().toString() + fileName + ".png";
         }
     }
 }

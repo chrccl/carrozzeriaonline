@@ -33,6 +33,8 @@ public class Task {
 
     private Partner partner;
 
+    private String warrantUrl;
+
     private TaskStatus status;
 
     private Boolean isWeb;

@@ -55,23 +55,22 @@ public class TaskController {
         MessageData messageData = new MessageData(messageBody, numMedia, contentTypeAttachment, mediaUrlAttachment);
         Optional<Task> optionalTask = taskService.findOngoingTaskByPhoneNumber(fromNumber);
         BotContext botContext;
-        BotState nextBotState;
+        BotState currentBotState;
         Task task;
         Boolean errorOccurred;
         if (optionalTask.isPresent()) {
             task = optionalTask.get();
-            BotState currentBotState = botStatesFactory.getStateFromTask(task);
+            currentBotState = botStatesFactory.getStateFromTask(task);
             errorOccurred = currentBotState.verifyMessage(task, messageData);
-            nextBotState = errorOccurred ? currentBotState : botStatesFactory.getNextStateFromTask(task);
         } else {
             task = Task.builder()
                     .id(new TaskId(fromNumber, LocalDateTime.now())).user(new User(fromNumber))
                     .status(TaskStatus.INITIAL_STATE).isWeb(false).accepted(false)
                     .build();
             errorOccurred = false;
-            nextBotState = botStatesFactory.getInitialState();
+            currentBotState = botStatesFactory.getInitialState();
         }
-        botContext = new BotContext(nextBotState, task);
+        botContext = new BotContext(currentBotState, task);
         if (errorOccurred) {
             botContext.handleError(fromNumber, messageData);
         }else{

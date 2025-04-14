@@ -3,7 +3,9 @@ package it.chrccl.carrozzeriaonline.bot;
 import it.chrccl.carrozzeriaonline.bot.states.*;
 import it.chrccl.carrozzeriaonline.model.dao.Task;
 import it.chrccl.carrozzeriaonline.model.dao.TaskStatus;
+
 import lombok.Getter;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -70,26 +72,6 @@ public class BotStatesFactory {
             case CAR_REPAIR_CENTER -> carRepairCenterState;
             case BOUNCING -> bouncingState;
             case ACCEPTED -> acceptedState;
-        };
-    }
-
-    /**
-     * FACTORY METHOD
-     */
-    public BotState getNextStateFromTask(Task task) {
-        TaskStatus status = task.getStatus();
-        return switch (status) {
-            case WEB           -> webState;
-            case INITIAL_STATE -> multimediaState;
-            case MULTIMEDIA    -> dateState;
-            case DATE          -> fullNameState;
-            case FULL_NAME     -> cfOrPIVAState;
-            case CF_OR_PIVA    -> carLicenseState;
-            case CAR_LICENSE   -> otpState;
-            case OTP           -> capState;
-            case CAP           -> carRepairCenterState;
-            case CAR_REPAIR_CENTER -> bouncingState;
-            case BOUNCING, ACCEPTED -> acceptedState;
         };
     }
 
