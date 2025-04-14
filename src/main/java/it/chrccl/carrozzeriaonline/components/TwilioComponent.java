@@ -27,19 +27,19 @@ public class TwilioComponent {
         Twilio.init(ACCOUNT_SID, AUTH_TOKEN);
     }
 
-    private Message sendMessage(PhoneNumber to, String body) {
+    public Message sendMessage(PhoneNumber to, String body) {
         Message msg = Message.creator(to, MESSAGING_SID, body).create();
         log.info(msg.getSid());
         return msg;
     }
 
-    private Message sendMediaMessage(PhoneNumber to, URI body) {
+    public Message sendMediaMessage(PhoneNumber to, URI body) {
         Message msg = Message.creator(to, MESSAGING_SID, "").setMediaUrl(body).create();
         log.info(msg.getSid());
         return msg;
     }
 
-    private Message sendMediaMessages(PhoneNumber to, List<URI> body) {
+    public Message sendMediaMessages(PhoneNumber to, List<URI> body) {
         Message msg = Message.creator(to, MESSAGING_SID, "").setMediaUrl(body).create();
         log.info(msg.getSid());
         return msg;

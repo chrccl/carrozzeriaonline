@@ -43,6 +43,7 @@ public class TaskController {
      * @param numMedia            the number of media attachments.
      * @param contentTypeAttachment optional content type of the first media.
      * @param mediaUrlAttachment    optional URL of the first media.
+     *
      * @return a ResponseEntity with the processing status.
      *
      */
