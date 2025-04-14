@@ -1,6 +1,7 @@
 package it.chrccl.carrozzeriaonline.bot.states;
 
 import com.twilio.type.PhoneNumber;
+
 import it.chrccl.carrozzeriaonline.bot.BotContext;
 import it.chrccl.carrozzeriaonline.bot.BotState;
 import it.chrccl.carrozzeriaonline.bot.MessageData;
@@ -9,6 +10,7 @@ import it.chrccl.carrozzeriaonline.model.Constants;
 import it.chrccl.carrozzeriaonline.model.dao.Attachment;
 import it.chrccl.carrozzeriaonline.model.dao.Task;
 import it.chrccl.carrozzeriaonline.services.AttachmentService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -35,7 +37,7 @@ public class MultimediaState implements BotState {
 
     @Override
     public void handleMessage(BotContext context, String fromNumber, MessageData data) {
-        Attachment attachment = getAttachment(data);
+        Attachment attachment = getAttachment(context, data);
         if (attachment != null) attachmentService.save(attachment);
 
         if(checkMinimumAttachmentsPerTask(context.getTask())){
@@ -54,7 +56,7 @@ public class MultimediaState implements BotState {
         handleMessage(context, fromNumber, data);
     }
 
-    private Attachment getAttachment(MessageData data) {
+    private Attachment getAttachment(BotContext context, MessageData data) {
         try {
             URL url = new URL(data.getMediaUrlAttachment());
             URLConnection connection = url.openConnection();
@@ -71,6 +73,7 @@ public class MultimediaState implements BotState {
                     .contentType(data.getContentTypeAttachment())
                     .base64Data(imageBase64)
                     .url(data.getMediaUrlAttachment())
+                    .task(context.getTask())
                     .build();
         } catch (IOException e) {
             return null;
