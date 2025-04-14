@@ -60,6 +60,10 @@ public class TaskController {
         Boolean errorOccurred;
         if (optionalTask.isPresent()) {
             task = optionalTask.get();
+            if(numMedia > 0 && task.getStatus() != TaskStatus.MULTIMEDIA){
+                botContext = new BotContext(botStatesFactory.getMultimediaState(), task);
+                botContext.handle(fromNumber, messageData);
+            }
             currentBotState = botStatesFactory.getStateFromTask(task);
             errorOccurred = currentBotState.verifyMessage(task, messageData);
         } else {

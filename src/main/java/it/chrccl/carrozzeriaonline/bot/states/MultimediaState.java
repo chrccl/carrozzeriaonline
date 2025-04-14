@@ -43,12 +43,15 @@ public class MultimediaState implements BotState {
         Attachment attachment = getAttachment(context, data);
         if (attachment != null) attachmentService.save(attachment);
 
+        PhoneNumber to = new PhoneNumber(fromNumber);
         if(checkMinimumAttachmentsPerTask(context.getTask()) && context.getTask().getStatus() == TaskStatus.MULTIMEDIA){
-            PhoneNumber to = new PhoneNumber(fromNumber);
             twilio.sendMessage(to, Constants.BOT_DATE_MESSAGE);
 
             context.getTask().setStatus(TaskStatus.DATE);
             taskService.save(context.getTask());
+        } else if (checkMinimumAttachmentsPerTask(context.getTask())
+                && context.getTask().getStatus() != TaskStatus.MULTIMEDIA) {
+            twilio.sendMessage(to, Constants.BOT_OUT_OF_ORDER_ATTACHMENT);
         }
     }
 
@@ -88,7 +91,7 @@ public class MultimediaState implements BotState {
 
     private Boolean checkMinimumAttachmentsPerTask(Task task) {
         List<Attachment> attachments = attachmentService.findAttachmentsByTask(task);
-        return attachments.size() == 3 ||
+        return attachments.size() >= 3 ||
                 attachments.stream().anyMatch(attachment -> attachment.getContentType().contains("pdf"));
     }
 

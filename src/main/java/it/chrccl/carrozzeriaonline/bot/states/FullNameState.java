@@ -3,6 +3,7 @@ package it.chrccl.carrozzeriaonline.bot.states;
 import it.chrccl.carrozzeriaonline.bot.BotContext;
 import it.chrccl.carrozzeriaonline.bot.BotState;
 import it.chrccl.carrozzeriaonline.bot.MessageData;
+import it.chrccl.carrozzeriaonline.model.dao.Task;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -14,7 +15,7 @@ public class FullNameState implements BotState {
     }
 
     @Override
-    public Boolean verifyMessage(MessageData data) {
+    public Boolean verifyMessage(Task task,  MessageData data) {
         return null;
     }
 

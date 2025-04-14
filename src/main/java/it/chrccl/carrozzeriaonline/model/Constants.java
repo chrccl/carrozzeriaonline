@@ -20,6 +20,8 @@ public class Constants {
             - *Carabinieri*: 112
             """;
 
+    public static final String BOT_OUT_OF_ORDER_ATTACHMENT = "Allegato aggiunto correttamente.";
+
     public static final String BOT_DATE_MESSAGE =
             """
             Scrivi la *DATA* dell’incidente nel seguente formato: *gg/mm/aaaa*.
@@ -27,7 +29,7 @@ public class Constants {
 
     public static final String BOT_FALLBACK_DATE_MESSAGE =
             """
-            Formato della data non corretta. Scrivi la data dell'incidente nel seguente formato *gg/mm/aaaa*.
+            Data non riconosciuta, scrivi la data dell'incidente nel seguente formato *gg/mm/aaaa*.
             """;
 
     public static final String BOT_FULLNAME_MESSAGE = "Scrivi il tuo *NOME* e *COGNOME* in un unico messaggio.";
