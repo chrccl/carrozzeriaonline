@@ -11,6 +11,7 @@ import it.chrccl.carrozzeriaonline.model.Constants;
 import it.chrccl.carrozzeriaonline.model.dao.OtpCheck;
 import it.chrccl.carrozzeriaonline.model.dao.Partner;
 import it.chrccl.carrozzeriaonline.model.dao.Task;
+import it.chrccl.carrozzeriaonline.model.dao.TaskStatus;
 import it.chrccl.carrozzeriaonline.services.OtpCheckService;
 import it.chrccl.carrozzeriaonline.services.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +48,7 @@ public class CarLicenseAndPhoneConfState implements BotState {
         String extractedPhoneNumber = extractPhoneNumber(fromNumber);
 
         context.getTask().setLicensePlate(data.getMessageBody());
+        context.getTask().setStatus(TaskStatus.OTP);
         taskService.save(context.getTask());
 
         ioComponent.writeOnWarrantFile(context, Partner.CARLINK, extractedPhoneNumber, 190, 592);

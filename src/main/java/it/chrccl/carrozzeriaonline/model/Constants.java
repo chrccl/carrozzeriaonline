@@ -55,9 +55,31 @@ public class Constants {
            \s
            """;
 
+    public static final String BOT_FALLBACK_SENDING_OTP_MESSAGE =
+            """
+            Il codice che ci hai fornito non è errato o scaduto.
+            Ti abbiamo inviato nuovamente un codice via SMS valido 15 minuti. Scrivilo qui in chat per autorizzarci al
+            trattamento dei dati da te forniti a fini esclusivamente identificativi e per confermare di voler delegare i
+            nostri partner al recupero dei crediti relativi ai danni subiti senza alcun costo a tuo carico. Se non ti è
+            arrivato, scrivi *RINVIA* in chat.
+           \s
+            In caso di concorsualità o torto nella dinamica del sinistro o decurtazioni dovute a scoperti e franchigie,
+            potrai comunque concordare con il riparatore costi e modalità dell'intervento alle migliori condizioni a te
+            riservate, con auto sostitutiva, ritiro e consegna a domicilio e lavaggio del veicolo.
+           \s
+            Visita www.carrozzeriaonline.com/privacy-policy per leggere l'informativa sulla privacy.
+           \s
+           """;
+
+    public static final String BOT_CAP_MESSAGE = "Scrivi il tuo *CAP* per individuare la carrozzeria più vicina a te.";
+
+
+
     public static final String DATE_FORMAT = "dd/MM/yyyy";
 
     public static final String REVERSE_DATE_FORMAT = "dd\\MM\\yyyy";
+
+    public static final String SIGNED_DIGITALLY_STATUS = "Firmato digitalmente tramite OTP";
 
 
 

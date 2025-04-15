@@ -6,7 +6,6 @@ import it.chrccl.carrozzeriaonline.repos.OtpCheckRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,9 +23,9 @@ public class OtpCheckService {
         return repo.findAll();
     }
 
-    public List<OtpCheck> findOtpChecksByTask(Task task) {
-        Optional<List<OtpCheck>> otpChecks = repo.findByTask(task);
-        return otpChecks.orElseGet(ArrayList::new);
+    public OtpCheck findMostRecentOtpCheckByTask(Task task) {
+        Optional<OtpCheck> otpChecks = repo.findTopByTaskOrderByTimestampDesc(task);
+        return otpChecks.orElse(null);
     }
 
     public OtpCheck saveOtpCheck(OtpCheck otpCheck) {
