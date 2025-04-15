@@ -54,10 +54,7 @@ public class TaskController {
             @RequestParam(name = "MediaUrl0", required = false) String mediaUrlAttachment) {
         MessageData messageData = new MessageData(messageBody, numMedia, contentTypeAttachment, mediaUrlAttachment);
         Optional<Task> optionalTask = taskService.findOngoingTaskByPhoneNumber(fromNumber);
-        BotContext botContext;
-        BotState currentBotState;
-        Task task;
-        Boolean errorOccurred;
+        BotContext botContext; BotState currentBotState; Task task; Boolean errorOccurred;
         if (optionalTask.isPresent()) {
             task = optionalTask.get();
             if(numMedia > 0 && task.getStatus() != TaskStatus.MULTIMEDIA){

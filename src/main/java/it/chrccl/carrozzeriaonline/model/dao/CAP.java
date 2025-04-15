@@ -1,46 +1,29 @@
-package it.chrccl.carrozzeriaonline.model;
+package it.chrccl.carrozzeriaonline.model.dao;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Value;
+import lombok.NoArgsConstructor;
 
+@Entity
 @Data
-@Value
+@NoArgsConstructor
+@AllArgsConstructor
 public class CAP {
 
-    String cap;
+    @Id
+    private String cap;
 
-    String city;
+    private String city;
 
-    String province;
+    private String province;
 
-    String provinceCode;
+    private String provinceCode;
 
-    String region;
+    private String region;
 
-    Double lat;
+    private Double lat;
 
-    Double lon;
-
-    @JsonCreator
-    public CAP(
-            @JsonProperty("denominazioneIta") String city,
-            @JsonProperty("cap") String cap,
-            @JsonProperty("siglaProvincia") String provinceCode,
-            @JsonProperty("denominazioneProvincia") String province,
-            @JsonProperty("denominazioneRegione") String region,
-            @JsonProperty("lat") Double lat,
-            @JsonProperty("lon") Double lon
-    ) {
-        this.city = city;
-        this.cap = cap;
-        this.provinceCode = provinceCode;
-        this.province = province;
-        this.region = region;
-        this.lat = lat;
-        this.lon = lon;
-    }
+    private Double lon;
 
 }

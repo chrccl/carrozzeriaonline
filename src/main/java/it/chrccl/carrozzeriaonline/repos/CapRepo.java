@@ -1,4 +1,19 @@
 package it.chrccl.carrozzeriaonline.repos;
 
-public class CapRepo {
+import it.chrccl.carrozzeriaonline.model.dao.CAP;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public interface CapRepo  extends JpaRepository<CAP, String> {
+
+    // Metodo per recuperare il CAP con valore numerico più vicino
+    @Query(value = "SELECT * FROM cap " +
+            "ORDER BY ABS(CAST(cap AS UNSIGNED) - :targetVal) ASC " +
+            "LIMIT 1",
+            nativeQuery = true)
+    CAP findClosestCAPByNumericalOrder(@Param("targetVal") int targetVal);
+
 }
