@@ -39,8 +39,12 @@ public class CFOrPIVAState implements BotState {
         context.getTask().setStatus(TaskStatus.CAR_LICENSE);
         taskService.save(context.getTask());
 
-        ioComponent.writeOnWarrantFile(context, Partner.CARLINK, cfOrPiva, 190, 632);
-        ioComponent.writeOnWarrantFile(context, Partner.SAVOIA, cfOrPiva, 400, 643);
+        ioComponent.writeOnWarrantFile(
+                context, Partner.CARLINK, extractPhoneNumber(fromNumber), cfOrPiva, 190, 632
+        );
+        ioComponent.writeOnWarrantFile(
+                context, Partner.SAVOIA, extractPhoneNumber(fromNumber), cfOrPiva, 400, 643
+        );
 
         PhoneNumber to = new PhoneNumber(fromNumber);
         twilio.sendMessage(to, Constants.BOT_CAR_LICENCE_MESSAGE);

@@ -58,8 +58,8 @@ public class RepairCenterService {
         return repo.findById(id).orElse(null);
     }
 
-    public List<RepairCenter> findRepairCentersByCompanyNameIsLikeIgnoreCase(String companyName) {
-        return repo.findRepairCentersByCompanyNameIsLikeIgnoreCase(companyName);
+    public RepairCenter findRepairCentersByCompanyNameIsLikeIgnoreCase(String companyName) {
+        return repo.findRepairCentersByCompanyNameIsLikeIgnoreCase(companyName).orElse(null);
     }
 
     public List<RepairCenter> findRepairCentersByCAP(String cap) {

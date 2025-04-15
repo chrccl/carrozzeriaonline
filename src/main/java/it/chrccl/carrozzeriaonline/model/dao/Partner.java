@@ -7,7 +7,9 @@ public enum Partner {
 
     CARLINK("CARLINK"),
 
-    SAVOIA("SAVOIA");
+    SAVOIA("SAVOIA"),
+
+    INTERNAL("INTERNAL");
 
     private final String name;
 

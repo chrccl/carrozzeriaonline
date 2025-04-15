@@ -73,6 +73,19 @@ public class Constants {
 
     public static final String BOT_CAP_MESSAGE = "Scrivi il tuo *CAP* per individuare la carrozzeria più vicina a te.";
 
+    public static final String BOT_CUSTOM_REPAIR_CENTER_CHOSEN_MESSAGE =
+            "Richiesta inoltrata con successo, a breve verrai contattato dalla carrozzeria inserita.";
+
+    public static final String BOT_CARLINK_REPAIR_CENTER_CHOSEN_MESSAGE = """
+            
+            """;
+
+    public static final String BOT_SAVOIA_REPAIR_CENTER_CHOSEN_MESSAGE = """
+            
+            """;
+
+    public static final String BOT_REPAIR_CENTER_NOT_KNOWN_MESSAGE = "Carrozzeria richiesta non riconosciuta, riprova.";
+
 
 
     public static final String DATE_FORMAT = "dd/MM/yyyy";
@@ -80,6 +93,20 @@ public class Constants {
     public static final String REVERSE_DATE_FORMAT = "dd\\MM\\yyyy";
 
     public static final String SIGNED_DIGITALLY_STATUS = "Firmato digitalmente tramite OTP";
+
+
+
+    public static final String CARLINK_TASKS_EMAIL = "chri0407@gmail.com";   //TODO
+
+    public static final String SAVOIA_TASKS_EMAIL = "chri0407@gmail.com";    //TODO
+
+    public static final String TASK_EMAIL_SUBJECT = "Nuovo Incarico %s - Carrozzeria Online";
+
+    public static final String TEMPLATE_PARTNER_TASK_EMAIL = "IncaricoPerPartner.html";
+
+    public static final String TEMPLATE_REPAIR_CENTER_TASK_EMAIL = "IncaricoPerCarrozziere.html";
+
+    public static final String TEMPLATE_NO_MORE_TASK_SAVOIA_REPAIR_CENTER = "IncaricoDisdettoSavoia.html";
 
 
 

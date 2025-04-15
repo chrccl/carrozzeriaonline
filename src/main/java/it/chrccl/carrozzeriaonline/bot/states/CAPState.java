@@ -37,6 +37,7 @@ public class CAPState implements BotState {
     @Override
     public void handleMessage(BotContext context, String fromNumber, MessageData data) {
         context.getTask().setStatus(TaskStatus.CAR_REPAIR_CENTER);
+        context.getTask().getUser().setPreferredCap(data.getMessageBody());
         taskService.save(context.getTask());
 
         List<RepairCenter> closestRepairCentersByCap = repairCenterService.findClosestRepairCentersByCap(

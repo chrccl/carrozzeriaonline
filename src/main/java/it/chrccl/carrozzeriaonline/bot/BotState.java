@@ -10,4 +10,8 @@ public interface BotState {
 
     void handleError(BotContext context, String fromNumber, MessageData data);
 
+    default String extractPhoneNumber(String fromNumber) {
+        return fromNumber.substring(fromNumber.indexOf(':') + 1);
+    }
+
 }

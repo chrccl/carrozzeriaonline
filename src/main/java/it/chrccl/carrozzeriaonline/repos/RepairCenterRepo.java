@@ -7,11 +7,12 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface RepairCenterRepo extends JpaRepository<RepairCenter, Long> {
 
-    List<RepairCenter> findRepairCentersByCompanyNameIsLikeIgnoreCase(String companyName);
+    Optional<RepairCenter> findRepairCentersByCompanyNameIsLikeIgnoreCase(String companyName);
 
     List<RepairCenter> findRepairCentersByCap(String cap);
 

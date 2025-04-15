@@ -45,17 +45,17 @@ public class CarLicenseAndPhoneConfState implements BotState {
 
     @Override
     public void handleMessage(BotContext context, String fromNumber, MessageData data) {
-        String extractedPhoneNumber = extractPhoneNumber(fromNumber);
+        String purePhoneNumber = extractPhoneNumber(fromNumber);
 
         context.getTask().setLicensePlate(data.getMessageBody());
         context.getTask().setStatus(TaskStatus.OTP);
         taskService.save(context.getTask());
 
-        ioComponent.writeOnWarrantFile(context, Partner.CARLINK, extractedPhoneNumber, 190, 592);
-        ioComponent.writeOnWarrantFile(context, Partner.CARLINK, data.getMessageBody(), 135, 475);
-        ioComponent.writeOnWarrantFile(context, Partner.SAVOIA, data.getMessageBody(), 300, 628);
+        ioComponent.writeOnWarrantFile(context, Partner.CARLINK, purePhoneNumber, purePhoneNumber, 190, 592);
+        ioComponent.writeOnWarrantFile(context, Partner.CARLINK, purePhoneNumber, data.getMessageBody(), 135, 475);
+        ioComponent.writeOnWarrantFile(context, Partner.SAVOIA, purePhoneNumber, data.getMessageBody(), 300, 628);
 
-        String otpId = bulkGateComponent.sendOtp(extractedPhoneNumber);
+        String otpId = bulkGateComponent.sendOtp(purePhoneNumber);
         otpCheckService.saveOtpCheck(new OtpCheck(LocalDateTime.now(), otpId, context.getTask(), false));
 
         PhoneNumber to = new PhoneNumber(fromNumber);
@@ -70,10 +70,6 @@ public class CarLicenseAndPhoneConfState implements BotState {
     @Override
     public void handleError(BotContext context, String fromNumber, MessageData data) {
         handleMessage(context, fromNumber, data);
-    }
-
-    private String extractPhoneNumber(String fromNumber) {
-        return fromNumber.substring(fromNumber.indexOf(':') + 1);
     }
 
 }

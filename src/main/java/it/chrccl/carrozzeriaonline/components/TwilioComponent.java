@@ -64,7 +64,7 @@ public class TwilioComponent {
                 : center.getCompanyName();
     }
 
-    public Message sendMediaMessage(PhoneNumber to, URI body) {
+    public Message sendMediaMessage(PhoneNumber to, String body) {
         Message msg = Message.creator(to, MESSAGING_SID, "").setMediaUrl(body).create();
         log.info(msg.getSid());
         return msg;

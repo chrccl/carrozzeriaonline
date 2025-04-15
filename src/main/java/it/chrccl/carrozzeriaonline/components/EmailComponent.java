@@ -33,7 +33,7 @@ public class EmailComponent {
         this.templateEngine = templateEngine;
     }
 
-    private void sendTaskNotification(String to, String subject, Map<String, Object> variables,
+    public void sendTaskNotification(String to, String subject, Map<String, Object> variables,
                                       List<Attachment> fileToAttach, String template) {
         log.info("Preparing email to: {} with subject: {}", to, subject);
         MimeMessagePreparator preparator = mimeMessage -> {

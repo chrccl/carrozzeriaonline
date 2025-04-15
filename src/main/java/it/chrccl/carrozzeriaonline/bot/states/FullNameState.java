@@ -42,10 +42,14 @@ public class FullNameState implements BotState {
         context.getTask().setStatus(TaskStatus.CF_OR_PIVA);
         taskService.save(context.getTask());
 
-        ioComponent.writeOnWarrantFile(context, Partner.CARLINK, fullName, 190, 652);
-        ioComponent.writeOnWarrantFile(context, Partner.SAVOIA, fullName, 185, 643);
-        ioComponent.signWarrantFile(Partner.CARLINK, fullName, 370, 75);
-        ioComponent.signWarrantFile(Partner.SAVOIA, fullName, 390, 185);
+        ioComponent.writeOnWarrantFile(
+                context, Partner.CARLINK, extractPhoneNumber(fromNumber), fullName, 190, 652
+        );
+        ioComponent.writeOnWarrantFile(
+                context, Partner.SAVOIA, extractPhoneNumber(fromNumber), fullName, 185, 643
+        );
+        ioComponent.signWarrantFile(Partner.CARLINK, extractPhoneNumber(fromNumber), fullName, 370, 75);
+        ioComponent.signWarrantFile(Partner.SAVOIA, extractPhoneNumber(fromNumber), fullName, 390, 185);
 
         PhoneNumber to = new PhoneNumber(fromNumber);
         twilio.sendMessage(to, Constants.BOT_CF_OR_PIVA_MESSAGE);

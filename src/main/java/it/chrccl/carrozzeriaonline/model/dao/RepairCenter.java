@@ -23,4 +23,6 @@ public class RepairCenter {
 
     private String email;
 
+    private Partner partner;
+
 }

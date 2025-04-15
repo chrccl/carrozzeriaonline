@@ -17,6 +17,8 @@ public class User {
 
     private String cf;
 
+    private String preferredCap;
+
     public User(String mobilePhone) {
         this.mobilePhone = mobilePhone;
     }

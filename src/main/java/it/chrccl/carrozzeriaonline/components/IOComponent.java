@@ -21,14 +21,14 @@ import java.nio.file.StandardCopyOption;
 @Component
 public class IOComponent {
 
-    public void writeOnWarrantFile(BotContext context, Partner partner, String text, int x, int y){
+    public void writeOnWarrantFile(BotContext context, Partner partner, String userPhone, String text, int x, int y){
         String templatePdfPath = partner == Partner.CARLINK
                 ? Constants.CARLINK_WARRANT_PATH
                 : Constants.SAVOIA_WARRANT_PATH;
 
         String outputPdfPath = partner == Partner.CARLINK
-                ? Constants.USER_CARLINK_WARRANT_PATH_FORMAT
-                : Constants.USER_SAVOIA_WARRANT_PATH_FORMAT;
+                ? String.format(Constants.USER_CARLINK_WARRANT_PATH_FORMAT, userPhone)
+                : String.format(Constants.USER_SAVOIA_WARRANT_PATH_FORMAT, userPhone);
 
         if (context.getTask().getStatus() == TaskStatus.DATE) {
             copyAndRenameFile(templatePdfPath, outputPdfPath);
@@ -46,11 +46,11 @@ public class IOComponent {
         }
     }
 
-    public void signWarrantFile(Partner partner, String text, int x, int y) {
+    public void signWarrantFile(Partner partner, String userPhone, String text, int x, int y) {
         try {
             String outputPdfPath = partner == Partner.CARLINK
-                    ? Constants.USER_CARLINK_WARRANT_PATH_FORMAT
-                    : Constants.USER_SAVOIA_WARRANT_PATH_FORMAT;
+                    ? String.format(Constants.USER_CARLINK_WARRANT_PATH_FORMAT, userPhone)
+                    : String.format(Constants.USER_SAVOIA_WARRANT_PATH_FORMAT, userPhone);
 
             PDDocument document = PDDocument.load(new File(outputPdfPath));
             PDPage page = document.getPage(0);

@@ -31,8 +31,6 @@ public class Task {
 
     private LocalDate accidentDate;
 
-    private Partner partner;
-
     private String warrantUrl;
 
     private TaskStatus status;
