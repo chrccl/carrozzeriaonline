@@ -40,7 +40,20 @@ public class Constants {
 
     public static final String BOT_CAR_LICENCE_MESSAGE = "Scrivi la *TARGA* della tua auto.";
 
-
+    public static final String BOT_SENDING_OTP_MESSAGE =
+            """
+            Ti abbiamo inviato un codice via SMS valido 15 minuti. Scrivilo qui in chat per autorizzarci al trattamento\s
+            dei dati da te forniti a fini esclusivamente identificativi e per confermare di voler delegare i nostri\s
+            partner al recupero dei crediti relativi ai danni subiti senza alcun costo a tuo carico. Se non ti è
+            arrivato, scrivi *RINVIA* in chat.
+           \s
+            In caso di concorsualità o torto nella dinamica del sinistro o decurtazioni dovute a scoperti e franchigie,
+            potrai comunque concordare con il riparatore costi e modalità dell'intervento alle migliori condizioni a te
+            riservate, con auto sostitutiva, ritiro e consegna a domicilio e lavaggio del veicolo.
+           \s
+            Visita www.carrozzeriaonline.com/privacy-policy per leggere l'informativa sulla privacy.
+           \s
+           """;
 
     public static final String DATE_FORMAT = "dd/MM/yyyy";
 

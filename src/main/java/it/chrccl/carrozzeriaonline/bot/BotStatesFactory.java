@@ -25,7 +25,7 @@ public class BotStatesFactory {
 
     private final CFOrPIVAState cfOrPIVAState;
 
-    private final CarLicenseState carLicenseState;
+    private final CarLicenseAndPhoneConfState carLicenseAndPhoneConfState;
 
     private final OTPState otpState;
 
@@ -40,7 +40,7 @@ public class BotStatesFactory {
     @Autowired
     public BotStatesFactory(InitialState initialState, WebState webState, MultimediaState multimediaState,
                             DateState dateState, FullNameState fullNameState, CFOrPIVAState cfOrPIVAState,
-                            CarLicenseState carLicenseState, OTPState otpState, CAPState capState,
+                            CarLicenseAndPhoneConfState carLicenseAndPhoneConfState, OTPState otpState, CAPState capState,
                             CarRepairCenterState carRepairCenterState, BouncingState bouncingState,
                             AcceptedState acceptedState) {
         this.initialState = initialState;
@@ -49,7 +49,7 @@ public class BotStatesFactory {
         this.dateState = dateState;
         this.fullNameState = fullNameState;
         this.cfOrPIVAState = cfOrPIVAState;
-        this.carLicenseState = carLicenseState;
+        this.carLicenseAndPhoneConfState = carLicenseAndPhoneConfState;
         this.otpState = otpState;
         this.capState = capState;
         this.carRepairCenterState = carRepairCenterState;
@@ -66,7 +66,7 @@ public class BotStatesFactory {
             case DATE          -> dateState;
             case FULL_NAME     -> fullNameState;
             case CF_OR_PIVA    -> cfOrPIVAState;
-            case CAR_LICENSE   -> carLicenseState;
+            case CAR_LICENSE   -> carLicenseAndPhoneConfState;
             case OTP           -> otpState;
             case CAP           -> capState;
             case CAR_REPAIR_CENTER -> carRepairCenterState;
