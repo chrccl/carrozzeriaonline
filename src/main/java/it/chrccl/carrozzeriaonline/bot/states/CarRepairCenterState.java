@@ -1,6 +1,7 @@
 package it.chrccl.carrozzeriaonline.bot.states;
 
 import com.twilio.type.PhoneNumber;
+
 import it.chrccl.carrozzeriaonline.bot.BotContext;
 import it.chrccl.carrozzeriaonline.bot.BotState;
 import it.chrccl.carrozzeriaonline.bot.MessageData;
@@ -15,7 +16,9 @@ import it.chrccl.carrozzeriaonline.services.AttachmentService;
 import it.chrccl.carrozzeriaonline.services.BRCPerTaskService;
 import it.chrccl.carrozzeriaonline.services.RepairCenterService;
 import it.chrccl.carrozzeriaonline.services.TaskService;
+
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -68,15 +71,17 @@ public class CarRepairCenterState implements BotState {
         List<Attachment> attachments = attachmentService.findAttachmentsByTask(context.getTask());
         RepairCenter rc;
         if (contactsOfCustomRepairCenter != null) {
-            sendTaskToCustomRepairCenter(
-                    context, attachments, fromNumber, contactsOfCustomRepairCenter[0], contactsOfCustomRepairCenter[1]
-            );
-            twilio.sendMessage(to, Constants.BOT_CUSTOM_REPAIR_CENTER_CHOSEN_MESSAGE);
-
             rc = repairCenterService.findClosestRepairCentersByCap(
                     context.getTask().getUser().getPreferredCap(),
                     null
             ).get(0);
+            sendTaskToCustomRepairCenter(
+                    context, attachments, fromNumber,
+                    contactsOfCustomRepairCenter[0], contactsOfCustomRepairCenter[1], rc
+            );
+            twilio.sendMessage(to, Constants.BOT_CUSTOM_REPAIR_CENTER_CHOSEN_MESSAGE);
+
+
             brcPerTaskService.save(new BRCPerTask(new BRCPerTaskId(context.getTask(), rc), false));
         } else {
             rc = repairCenterService.findRepairCentersByCompanyNameIsLikeIgnoreCase(data.getMessageBody());
@@ -102,9 +107,10 @@ public class CarRepairCenterState implements BotState {
         twilio.sendMessage(to, Constants.BOT_REPAIR_CENTER_NOT_KNOWN_MESSAGE);
     }
 
-    private void sendTaskToCustomRepairCenter(BotContext context, List<Attachment> attachments,
-                                              String fromNumber, String email, String phoneNumber) {
-        Map<String, Object> variables = sendCarlinkCommunication(context, attachments, fromNumber);
+    private void sendTaskToCustomRepairCenter(BotContext context, List<Attachment> attachments, String fromNumber,
+                                              String email, String phoneNumber, RepairCenter rc) {
+        Map<String, Object> variables = sendCarlinkCommunication(context, attachments, fromNumber, rc);
+        variables.put(ThymeleafVariables.REPAIR_CENTER_NAME_PLACEHOLDER, Constants.COMPANY_NAME_NOT_PROVIDED);
         variables.put(ThymeleafVariables.REPAIR_CENTER_EMAIL_PLACEHOLDER, email);
         variables.put(ThymeleafVariables.REPAIR_CENTER_PHONE_PLACEHOLDER, phoneNumber);
         emailComponent.sendTaskNotification(
@@ -126,7 +132,7 @@ public class CarRepairCenterState implements BotState {
 
     private void sendTaskCarlinkRepairCenter(BotContext context, List<Attachment> attachments, String fromNumber,
                                              RepairCenter rc) {
-        Map<String, Object> variables = sendCarlinkCommunication(context, attachments, fromNumber);
+        Map<String, Object> variables = sendCarlinkCommunication(context, attachments, fromNumber, rc);
         if(rc.getPartner() == Partner.INTERNAL){
             emailComponent.sendTaskNotification(
                     rc.getEmail(),
@@ -149,7 +155,7 @@ public class CarRepairCenterState implements BotState {
             );
             twilio.sendMediaMessage(to, url);
 
-            Map<String, Object> variables = emailComponent.buildThymeleafVariables(context.getTask(), false);
+            Map<String, Object> variables = emailComponent.buildThymeleafVariables(context.getTask(), rc, false);
             emailComponent.sendTaskNotification(
                     Constants.SAVOIA_TASKS_EMAIL,
                     String.format(Constants.TASK_EMAIL_SUBJECT, context.getTask().getLicensePlate()),
@@ -168,7 +174,7 @@ public class CarRepairCenterState implements BotState {
     }
 
     private Map<String, Object> sendCarlinkCommunication(BotContext context, List<Attachment> attachments,
-                                                         String fromNumber) {
+                                                         String fromNumber, RepairCenter rc) {
         PhoneNumber to = new PhoneNumber(fromNumber);
         twilio.sendMessage(to, Constants.BOT_CARLINK_REPAIR_CENTER_CHOSEN_MESSAGE);
         Path warrantPath = Path.of(String.format(Constants.USER_CARLINK_WARRANT_PATH_FORMAT, fromNumber));
@@ -179,7 +185,7 @@ public class CarRepairCenterState implements BotState {
             twilio.sendMediaMessage(to, url);
         }catch (IOException ignored){ }
 
-        Map<String, Object> variables = emailComponent.buildThymeleafVariables(context.getTask(), true);
+        Map<String, Object> variables = emailComponent.buildThymeleafVariables(context.getTask(), rc,true);
         emailComponent.sendTaskNotification(
                 Constants.CARLINK_TASKS_EMAIL,
                 String.format(Constants.TASK_EMAIL_SUBJECT, context.getTask().getLicensePlate()),

@@ -18,6 +18,8 @@ public class ThymeleafVariables {
 
     public static final String LICENSE_PLATE_PLACEHOLDER = "targaDanneggiato";
 
+    public static final String TIMESTAMP = "timestamp";
+
     public static final String IS_CARLINK_FLAG = "isCarlink";
 
 }

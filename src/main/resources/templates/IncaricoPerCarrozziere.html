@@ -101,17 +101,17 @@
 		    </a>
 	    </p>
 	</div>
-    <div class="text-center">
-		<a th:href="@{https://env-4086303.it1.eur.aruba.jenv-aruba.cloud/carrozzeriaonlineapi/acceptIncarico/{telefono}/{ragioneSocialeCarrozzeria}(telefono=${telefonoDanneggiato}, ragioneSocialeCarrozzeria=${ragioneSocialeCarrozzeria})}" 
-		   class="btn btn-success">
-		   Accetta
-		</a>
-		
-		<a th:href="@{https://env-4086303.it1.eur.aruba.jenv-aruba.cloud/carrozzeriaonlineapi/refuseIncarico/{telefono}(telefono=${telefonoDanneggiato})}" 
-		   class="btn btn-danger">
-		   Rifiuta
-		</a>
-    </div>
+      <div class="text-center">
+          <a th:href="@{https://env-4086303.it1.eur.aruba.jenv-aruba.cloud/carrozzeriaonlineapi/acceptIncarico/{telefono}/{ragioneSocialeCarrozzeria}/{timestamp}(telefono=${telefonoDanneggiato}, ragioneSocialeCarrozzeria=${ragioneSocialeCarrozzeria}, timestamp=${#dates.format(localDateTime, 'yyyy-MM-dd\'T\'HH:mm:ss')})}"
+             class="btn btn-success">
+              Accetta
+          </a>
+
+          <a th:href="@{https://env-4086303.it1.eur.aruba.jenv-aruba.cloud/carrozzeriaonlineapi/refuseIncarico/{telefono}/{timestamp}(telefono=${telefonoDanneggiato}, timestamp=${#dates.format(localDateTime, 'yyyy-MM-dd\'T\'HH:mm:ss')})}"
+             class="btn btn-danger">
+              Rifiuta
+          </a>
+      </div>
   </div>
 </body>
 </html>

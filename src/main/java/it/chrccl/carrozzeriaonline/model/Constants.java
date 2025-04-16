@@ -108,6 +108,8 @@ public class Constants {
 
     public static final String TEMPLATE_NO_MORE_TASK_SAVOIA_REPAIR_CENTER = "IncaricoDisdettoSavoia.html";
 
+    public static final String COMPANY_NAME_NOT_PROVIDED = "Non specificato dall'utente";
+
 
 
     public static final String CARLINK_WARRANT_PATH = "/opt/tomcat/dichiarazioneCarLink_compilabile.pdf";
