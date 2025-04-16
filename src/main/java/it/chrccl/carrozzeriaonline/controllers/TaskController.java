@@ -9,12 +9,11 @@ import it.chrccl.carrozzeriaonline.model.dao.TaskId;
 import it.chrccl.carrozzeriaonline.model.dao.TaskStatus;
 import it.chrccl.carrozzeriaonline.model.dao.User;
 import it.chrccl.carrozzeriaonline.services.TaskService;
-
 import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -69,6 +68,12 @@ public class TaskController {
         return ResponseEntity.ok("Message processed successfully.");
     }
 
+    @PostMapping("handleWebPlatformIncomingTask")
+    public ResponseEntity<String> handleWebPlatformIncomingTask(@RequestBody Task task){
+        //TODO
+        return null;
+    }
+
     @GetMapping("/acceptIncarico/{telefono}/{ragioneSocialeCarrozzeria}/{timestamp}")
     public ResponseEntity<String> acceptIncarico(
             @PathVariable("telefono") String fromNumber,
@@ -93,6 +98,11 @@ public class TaskController {
             new BotContext(botStatesFactory.getStateFromTask(task), task).handleError(fromNumber, null);
         }
         return ResponseEntity.ok("Incarico refused for " + fromNumber + " at " + timestamp);
+    }
+
+    @Scheduled(cron = "0 0 * * * *")
+    public void checkTasksToBounce() {
+        //TODO
     }
     
 }

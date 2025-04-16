@@ -16,7 +16,8 @@ public enum TaskStatus {
     CAP("CAP"),
     CAR_REPAIR_CENTER("CAR_REPAIR_CENTER"),
     BOUNCING("BOUNCING"),
-    ACCEPTED("ACCEPTED");
+    ACCEPTED("ACCEPTED"),
+    DELETED("DELETED");
 
     private final String name;
 
