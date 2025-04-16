@@ -126,4 +126,8 @@ public class Constants {
 
     public static final String WARRANT_CONTENT_TYPE = "application/pdf";
 
+
+
+    public static final String TWILIO_PREFIX = "whatsapp:";
+
 }

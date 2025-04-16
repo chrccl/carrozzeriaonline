@@ -125,7 +125,7 @@ public class CarRepairCenterState implements BotState {
     private void sendTaskToChosenRepairCenter(BotContext context, List<Attachment> attachments, String fromNumber,
                                               RepairCenter rc) {
         switch (rc.getPartner()){
-            case CARLINK -> sendTaskCarlinkRepairCenter(context, attachments, fromNumber, rc);
+            case CARLINK, INTERNAL -> sendTaskCarlinkRepairCenter(context, attachments, fromNumber, rc);
             case SAVOIA -> sendTaskSavoiaRepairCenter(context, attachments, fromNumber, rc);
         }
     }

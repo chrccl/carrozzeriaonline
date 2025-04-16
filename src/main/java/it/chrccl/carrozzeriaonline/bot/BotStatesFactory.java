@@ -35,14 +35,11 @@ public class BotStatesFactory {
 
     private final BouncingState bouncingState;
 
-    private final AcceptedState acceptedState;
-
     @Autowired
     public BotStatesFactory(InitialState initialState, WebState webState, MultimediaState multimediaState,
                             DateState dateState, FullNameState fullNameState, CFOrPIVAState cfOrPIVAState,
                             CarLicenseAndPhoneConfState carLicenseAndPhoneConfState, OTPState otpState, CAPState capState,
-                            CarRepairCenterState carRepairCenterState, BouncingState bouncingState,
-                            AcceptedState acceptedState) {
+                            CarRepairCenterState carRepairCenterState, BouncingState bouncingState) {
         this.initialState = initialState;
         this.webState = webState;
         this.multimediaState = multimediaState;
@@ -54,7 +51,6 @@ public class BotStatesFactory {
         this.capState = capState;
         this.carRepairCenterState = carRepairCenterState;
         this.bouncingState = bouncingState;
-        this.acceptedState = acceptedState;
     }
 
     public BotState getStateFromTask(Task task) {
@@ -71,7 +67,7 @@ public class BotStatesFactory {
             case CAP           -> capState;
             case CAR_REPAIR_CENTER -> carRepairCenterState;
             case BOUNCING -> bouncingState;
-            case ACCEPTED -> acceptedState;
+            default -> throw new IllegalStateException("Unexpected value: " + status);
         };
     }
 

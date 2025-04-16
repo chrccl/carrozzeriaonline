@@ -4,6 +4,7 @@ import com.twilio.Twilio;
 import com.twilio.rest.api.v2010.account.Message;
 import com.twilio.type.PhoneNumber;
 import it.chrccl.carrozzeriaonline.model.dao.RepairCenter;
+import it.chrccl.carrozzeriaonline.model.dao.User;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
@@ -27,6 +28,12 @@ public class TwilioComponent {
 
     @Value("${twilio.repair.center.template.sid}")
     private static String REPAIR_CENTER_TEMPLATE_SID;
+
+    @Value("${twilio.confmsg.nobouncing.sid}")
+    private static String CONFMG_NOBOUNCING_SID;
+
+    @Value("${twilio.confmsg.withbouncing.sid}")
+    private static String CONFMG_WITHBOUNCING_SID;
 
     static {
         Twilio.init(ACCOUNT_SID, AUTH_TOKEN);
@@ -54,6 +61,26 @@ public class TwilioComponent {
         return Message.creator(to, MESSAGING_SID, "")
                 .setContentVariables(contentVariables.toString())
                 .setContentSid(REPAIR_CENTER_TEMPLATE_SID)
+                .create();
+    }
+
+    public Message sendUserConfirmationMessageNoBouncing(PhoneNumber to, User user, RepairCenter repairCenter) {
+        return buildVariablesForConfMsg(to, user, repairCenter, CONFMG_NOBOUNCING_SID);
+    }
+
+    public Message sendUserConfirmationMessageWithBouncing(PhoneNumber to, User user, RepairCenter repairCenter) {
+        return buildVariablesForConfMsg(to, user, repairCenter, CONFMG_WITHBOUNCING_SID);
+    }
+
+    private Message buildVariablesForConfMsg(PhoneNumber to, User user, RepairCenter repairCenter, String confmgWithbouncingSid) {
+        JSONObject contentVariables = new JSONObject();
+        contentVariables.put("nome_utente", user.getFullName().substring(0, user.getFullName().indexOf(' ')));
+        contentVariables.put("nome_carrozzeria", formatRepairCenterName(repairCenter));
+        contentVariables.put("telefono_carrozzeria", repairCenter.getPhoneNumber());
+
+        return Message.creator(to, MESSAGING_SID, "")
+                .setContentVariables(contentVariables.toString())
+                .setContentSid(confmgWithbouncingSid)
                 .create();
     }
 

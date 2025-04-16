@@ -75,9 +75,11 @@ public class TaskController {
             @PathVariable("ragioneSocialeCarrozzeria") String companyName,
             @PathVariable("timestamp")
             @DateTimeFormat(pattern="yyyy-MM-dd'T'HH:mm:ss") LocalDateTime timestamp) {
-
-        //TODO: fetch the task with fromNumber and timestamp and then fetch the BRCPerTask list and extract that one
-        // that has the company name like that one passed in the url.
+        Task task = taskService.findTaskById(new TaskId(fromNumber, timestamp));
+        if(task != null && task.getStatus() == TaskStatus.BOUNCING){
+            MessageData messageData = new MessageData(companyName, 0, null, null);
+            new BotContext(botStatesFactory.getStateFromTask(task), task).handle(fromNumber, messageData);
+        }
         return ResponseEntity.ok("Incarico accepted for " + companyName + " at " + timestamp);
     }
 
@@ -86,8 +88,10 @@ public class TaskController {
             @PathVariable("telefono") String fromNumber,
             @PathVariable("timestamp")
             @DateTimeFormat(pattern="yyyy-MM-dd'T'HH:mm:ss") LocalDateTime timestamp) {
-
-        //TODO
+        Task task = taskService.findTaskById(new TaskId(fromNumber, timestamp));
+        if(task != null && task.getStatus() == TaskStatus.BOUNCING){
+            new BotContext(botStatesFactory.getStateFromTask(task), task).handleError(fromNumber, null);
+        }
         return ResponseEntity.ok("Incarico refused for " + fromNumber + " at " + timestamp);
     }
     

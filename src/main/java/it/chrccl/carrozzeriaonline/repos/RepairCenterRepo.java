@@ -1,5 +1,6 @@
 package it.chrccl.carrozzeriaonline.repos;
 
+import it.chrccl.carrozzeriaonline.model.dao.Partner;
 import it.chrccl.carrozzeriaonline.model.dao.RepairCenter;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -15,6 +16,8 @@ public interface RepairCenterRepo extends JpaRepository<RepairCenter, Long> {
     Optional<RepairCenter> findRepairCentersByCompanyNameIsLikeIgnoreCase(String companyName);
 
     List<RepairCenter> findRepairCentersByCap(String cap);
+
+    List<RepairCenter> findRepairCentersByPartner(Partner partner);
 
     @Query(value = "SELECT r.*, " +
             "  (6371 * acos( " +

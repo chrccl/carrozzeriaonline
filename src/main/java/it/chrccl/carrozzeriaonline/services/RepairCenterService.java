@@ -1,6 +1,7 @@
 package it.chrccl.carrozzeriaonline.services;
 
 import it.chrccl.carrozzeriaonline.model.dao.CAP;
+import it.chrccl.carrozzeriaonline.model.dao.Partner;
 import it.chrccl.carrozzeriaonline.model.dao.RepairCenter;
 import it.chrccl.carrozzeriaonline.repos.RepairCenterRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +49,10 @@ public class RepairCenterService {
                 .forEach(result::add);
 
         return result;
+    }
+
+    public List<RepairCenter> findRepairCentersByPartner(Partner partner) {
+        return repo.findRepairCentersByPartner(partner);
     }
 
     public List<RepairCenter> findAllRepairCenters() {
