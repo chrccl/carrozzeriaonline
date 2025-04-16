@@ -207,6 +207,7 @@ public class CarRepairCenterState implements BotState {
                 .url(url)
                 .task(context.getTask())
                 .build();
+        context.getTask().setWarrantUrl(url);
         return attachmentService.save(warrantAttachment);
     }
 
