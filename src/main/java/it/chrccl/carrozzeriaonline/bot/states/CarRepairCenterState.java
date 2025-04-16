@@ -12,6 +12,7 @@ import it.chrccl.carrozzeriaonline.model.Constants;
 import it.chrccl.carrozzeriaonline.model.ThymeleafVariables;
 import it.chrccl.carrozzeriaonline.model.dao.*;
 import it.chrccl.carrozzeriaonline.services.AttachmentService;
+import it.chrccl.carrozzeriaonline.services.BRCPerTaskService;
 import it.chrccl.carrozzeriaonline.services.RepairCenterService;
 import it.chrccl.carrozzeriaonline.services.TaskService;
 import lombok.extern.slf4j.Slf4j;
@@ -43,10 +44,13 @@ public class CarRepairCenterState implements BotState {
 
     private final IOComponent ioComponent;
 
+    private final BRCPerTaskService brcPerTaskService;
+
     @Autowired
     public CarRepairCenterState(TwilioComponent twilio, TaskService taskService, RepairCenterService repairCenterService,
                                 AttachmentService attachmentService, EmailComponent emailComponent,
-                                ImgBBComponent imgBBComponent, IOComponent ioComponent) {
+                                ImgBBComponent imgBBComponent, IOComponent ioComponent,
+                                BRCPerTaskService brcPerTaskService) {
         this.twilio = twilio;
         this.taskService = taskService;
         this.repairCenterService = repairCenterService;
@@ -54,6 +58,7 @@ public class CarRepairCenterState implements BotState {
         this.emailComponent = emailComponent;
         this.imgBBComponent = imgBBComponent;
         this.ioComponent = ioComponent;
+        this.brcPerTaskService = brcPerTaskService;
     }
 
     @Override
@@ -61,23 +66,24 @@ public class CarRepairCenterState implements BotState {
         PhoneNumber to = new PhoneNumber(fromNumber);
         String[] contactsOfCustomRepairCenter = extractContact(data.getMessageBody());
         List<Attachment> attachments = attachmentService.findAttachmentsByTask(context.getTask());
+        RepairCenter rc;
         if (contactsOfCustomRepairCenter != null) {
             sendTaskToCustomRepairCenter(
                     context, attachments, fromNumber, contactsOfCustomRepairCenter[0], contactsOfCustomRepairCenter[1]
             );
             twilio.sendMessage(to, Constants.BOT_CUSTOM_REPAIR_CENTER_CHOSEN_MESSAGE);
 
-            context.getTask().setRepairCenter(
-                    repairCenterService.findClosestRepairCentersByCap(
-                            context.getTask().getUser().getPreferredCap(),
-                            null
-                    ).get(0)
-            );
+            rc = repairCenterService.findClosestRepairCentersByCap(
+                    context.getTask().getUser().getPreferredCap(),
+                    null
+            ).get(0);
+            brcPerTaskService.save(new BRCPerTask(new BRCPerTaskId(context.getTask(), rc), false));
         } else {
-            RepairCenter rc = repairCenterService.findRepairCentersByCompanyNameIsLikeIgnoreCase(data.getMessageBody());
-            context.getTask().setRepairCenter(rc);
-            sendTaskToChosenRepairCenter(context, attachments, fromNumber);
+            rc = repairCenterService.findRepairCentersByCompanyNameIsLikeIgnoreCase(data.getMessageBody());
+            sendTaskToChosenRepairCenter(context, attachments, fromNumber, rc);
         }
+        brcPerTaskService.save(new BRCPerTask(new BRCPerTaskId(context.getTask(), rc), false));
+
         context.getTask().setStatus(TaskStatus.BOUNCING);
         taskService.save(context.getTask());
         ioComponent.removeTmpLogs(fromNumber);
@@ -110,18 +116,20 @@ public class CarRepairCenterState implements BotState {
         );
     }
 
-    private void sendTaskToChosenRepairCenter(BotContext context, List<Attachment> attachments, String fromNumber) {
-        switch (context.getTask().getRepairCenter().getPartner()){
-            case CARLINK -> sendTaskCarlinkRepairCenter(context, attachments, fromNumber);
-            case SAVOIA -> sendTaskSavoiaRepairCenter(context, attachments, fromNumber);
+    private void sendTaskToChosenRepairCenter(BotContext context, List<Attachment> attachments, String fromNumber,
+                                              RepairCenter rc) {
+        switch (rc.getPartner()){
+            case CARLINK -> sendTaskCarlinkRepairCenter(context, attachments, fromNumber, rc);
+            case SAVOIA -> sendTaskSavoiaRepairCenter(context, attachments, fromNumber, rc);
         }
     }
 
-    private void sendTaskCarlinkRepairCenter(BotContext context, List<Attachment> attachments, String fromNumber) {
+    private void sendTaskCarlinkRepairCenter(BotContext context, List<Attachment> attachments, String fromNumber,
+                                             RepairCenter rc) {
         Map<String, Object> variables = sendCarlinkCommunication(context, attachments, fromNumber);
-        if(context.getTask().getRepairCenter().getPartner() == Partner.INTERNAL){
+        if(rc.getPartner() == Partner.INTERNAL){
             emailComponent.sendTaskNotification(
-                    context.getTask().getRepairCenter().getEmail(),
+                    rc.getEmail(),
                     String.format(Constants.TASK_EMAIL_SUBJECT, context.getTask().getLicensePlate()),
                     variables,
                     attachments,
@@ -130,7 +138,8 @@ public class CarRepairCenterState implements BotState {
         }
     }
 
-    private void sendTaskSavoiaRepairCenter(BotContext context, List<Attachment> attachments, String fromNumber) {
+    private void sendTaskSavoiaRepairCenter(BotContext context, List<Attachment> attachments, String fromNumber,
+                                            RepairCenter rc) {
         try{
             PhoneNumber to = new PhoneNumber(fromNumber);
             twilio.sendMessage(to, Constants.BOT_SAVOIA_REPAIR_CENTER_CHOSEN_MESSAGE);
@@ -149,7 +158,7 @@ public class CarRepairCenterState implements BotState {
                     Constants.TEMPLATE_PARTNER_TASK_EMAIL
             );
             emailComponent.sendTaskNotification(
-                    context.getTask().getRepairCenter().getEmail(),
+                    rc.getEmail(),
                     String.format(Constants.TASK_EMAIL_SUBJECT, context.getTask().getLicensePlate()),
                     variables,
                     attachments,

@@ -25,10 +25,6 @@ public class Task {
     @JoinColumn(name = "user_mobile_phone")
     private User user;
 
-    @ManyToOne
-    @JoinColumn(name = "repair_center_id")
-    private RepairCenter repairCenter;
-
     private LocalDate accidentDate;
 
     private String warrantUrl;
