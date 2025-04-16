@@ -1,7 +1,6 @@
 package it.chrccl.carrozzeriaonline.bot.states;
 
 import com.twilio.type.PhoneNumber;
-
 import it.chrccl.carrozzeriaonline.bot.BotContext;
 import it.chrccl.carrozzeriaonline.bot.BotState;
 import it.chrccl.carrozzeriaonline.bot.MessageData;
@@ -16,14 +15,15 @@ import it.chrccl.carrozzeriaonline.services.AttachmentService;
 import it.chrccl.carrozzeriaonline.services.BRCPerTaskService;
 import it.chrccl.carrozzeriaonline.services.RepairCenterService;
 import it.chrccl.carrozzeriaonline.services.TaskService;
-
 import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -153,6 +153,7 @@ public class CarRepairCenterState implements BotState {
             String url = imgBBComponent.uploadImage(
                     warrantPath.getParent().toString(), warrantPath.getFileName().toString()
             );
+            attachments.add(saveWarrantAsAttachment(context, warrantPath, url));
             twilio.sendMediaMessage(to, url);
 
             Map<String, Object> variables = emailComponent.buildThymeleafVariables(context.getTask(), rc, false);
@@ -182,6 +183,7 @@ public class CarRepairCenterState implements BotState {
             String url = imgBBComponent.uploadImage(
                     warrantPath.getParent().toString(), warrantPath.getFileName().toString()
             );
+            attachments.add(saveWarrantAsAttachment(context, warrantPath, url));
             twilio.sendMediaMessage(to, url);
         }catch (IOException ignored){ }
 
@@ -194,6 +196,18 @@ public class CarRepairCenterState implements BotState {
                 Constants.TEMPLATE_PARTNER_TASK_EMAIL
         );
         return variables;
+    }
+
+    private Attachment saveWarrantAsAttachment(BotContext context, Path warrantPath, String url) throws IOException {
+        Attachment warrantAttachment = Attachment.builder()
+                .name(warrantPath.getFileName().toString())
+                .contentType(Constants.WARRANT_CONTENT_TYPE)
+                .base64Data(Base64.getEncoder()
+                        .encodeToString(Files.readAllBytes(Paths.get(warrantPath.toString()))))
+                .url(url)
+                .task(context.getTask())
+                .build();
+        return attachmentService.save(warrantAttachment);
     }
 
     private String[] extractContact(String message) {

@@ -76,10 +76,12 @@ public class Constants {
     public static final String BOT_CUSTOM_REPAIR_CENTER_CHOSEN_MESSAGE =
             "Richiesta inoltrata con successo, a breve verrai contattato dalla carrozzeria inserita.";
 
-    public static final String BOT_CARLINK_REPAIR_CENTER_CHOSEN_MESSAGE = """
+    //TODO
+    public static final String BOT_CARLINK_REPAIR_CENTER_CHOSEN_MESSAGE = """   
             
             """;
 
+    //TODO
     public static final String BOT_SAVOIA_REPAIR_CENTER_CHOSEN_MESSAGE = """
             
             """;
@@ -121,5 +123,7 @@ public class Constants {
     public static final String USER_SAVOIA_WARRANT_PATH_FORMAT = "/opt/tomcat/%s/Savoia.pdf";
 
     public static final String FONT_PATH = "/opt/tomcat/fonts/Birthstone-Regular.ttf";
+
+    public static final String WARRANT_CONTENT_TYPE = "application/pdf";
 
 }
