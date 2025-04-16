@@ -15,7 +15,10 @@ import org.springframework.stereotype.Component;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.util.Comparator;
+import java.util.stream.Stream;
 
 @Slf4j
 @Component
@@ -71,6 +74,27 @@ public class IOComponent {
             log.debug("Text added and PDF saved at: {}", outputPdfPath);
         }catch (IOException e) {
             log.error("Error while processing PDF: {}", String.valueOf(e.getCause()));
+        }
+    }
+
+    public void removeTmpLogs(String fromNumber) {
+        Path warrantPath = Path.of(String.format(Constants.USER_CARLINK_WARRANT_PATH_FORMAT, fromNumber));
+        if (!Files.exists(warrantPath)) {
+            log.debug("The directory does not exist: {}", warrantPath);
+            return;
+        }
+        // Walk the directory tree in reverse order (files first, then directories)
+        try (Stream<Path> paths = Files.walk(warrantPath)) {
+            paths.sorted(Comparator.reverseOrder())
+                    .forEach(path -> {
+                        try {
+                            Files.delete(path);
+                        } catch (IOException e) {
+                            log.error("Failed to delete: {} ({})", path, e.getMessage());
+                        }
+                    });
+        } catch (IOException e) {
+            log.error("Error while deleting tmp logs: {}", e.getMessage());
         }
     }
 

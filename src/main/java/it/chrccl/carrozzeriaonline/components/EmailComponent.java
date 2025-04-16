@@ -1,6 +1,10 @@
 package it.chrccl.carrozzeriaonline.components;
 
+import it.chrccl.carrozzeriaonline.model.Constants;
+import it.chrccl.carrozzeriaonline.model.ThymeleafVariables;
 import it.chrccl.carrozzeriaonline.model.dao.Attachment;
+import it.chrccl.carrozzeriaonline.model.dao.Partner;
+import it.chrccl.carrozzeriaonline.model.dao.Task;
 import jakarta.activation.DataHandler;
 import jakarta.mail.Message;
 import jakarta.mail.internet.InternetAddress;
@@ -16,6 +20,7 @@ import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
 import java.util.Base64;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -73,5 +78,24 @@ public class EmailComponent {
         }
     }
 
+    public Map<String, Object> buildThymeleafVariables(Task task, Boolean isCarlink){
+        Map<String, Object> variables = new HashMap<>();
+        variables.put(ThymeleafVariables.REPAIR_CENTER_NAME_PLACEHOLDER, task.getRepairCenter().getCompanyName());
+        variables.put(ThymeleafVariables.REPAIR_CENTER_EMAIL_PLACEHOLDER, task.getRepairCenter().getEmail());
+        variables.put(ThymeleafVariables.REPAIR_CENTER_PHONE_PLACEHOLDER, task.getRepairCenter().getPhoneNumber());
+        variables.put(ThymeleafVariables.USER_FULLNAME_PLACEHOLDER, task.getUser().getFullName());
+        variables.put(ThymeleafVariables.USER_PHONE_PLACEHOLDER, task.getUser().getMobilePhone());
+        variables.put(ThymeleafVariables.LICENSE_PLATE_PLACEHOLDER, task.getLicensePlate());
+        if(isCarlink){
+            variables.put(ThymeleafVariables.PARTNER_NAME_PLACEHOLDER, Partner.CARLINK.name());
+            variables.put(ThymeleafVariables.PARTNER_EMAIL_PLACEHOLDER, Constants.CARLINK_TASKS_EMAIL);
+            variables.put(ThymeleafVariables.IS_CARLINK_FLAG, true);
+        }else{
+            variables.put(ThymeleafVariables.PARTNER_NAME_PLACEHOLDER, Partner.SAVOIA.name());
+            variables.put(ThymeleafVariables.PARTNER_EMAIL_PLACEHOLDER, Constants.SAVOIA_TASKS_EMAIL);
+            variables.put(ThymeleafVariables.IS_CARLINK_FLAG, false);
+        }
+        return variables;
+    }
 
 }

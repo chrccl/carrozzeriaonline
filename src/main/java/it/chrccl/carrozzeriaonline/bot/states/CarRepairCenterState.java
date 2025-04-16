@@ -1,11 +1,11 @@
 package it.chrccl.carrozzeriaonline.bot.states;
 
 import com.twilio.type.PhoneNumber;
-
 import it.chrccl.carrozzeriaonline.bot.BotContext;
 import it.chrccl.carrozzeriaonline.bot.BotState;
 import it.chrccl.carrozzeriaonline.bot.MessageData;
 import it.chrccl.carrozzeriaonline.components.EmailComponent;
+import it.chrccl.carrozzeriaonline.components.IOComponent;
 import it.chrccl.carrozzeriaonline.components.ImgBBComponent;
 import it.chrccl.carrozzeriaonline.components.TwilioComponent;
 import it.chrccl.carrozzeriaonline.model.Constants;
@@ -14,22 +14,16 @@ import it.chrccl.carrozzeriaonline.model.dao.*;
 import it.chrccl.carrozzeriaonline.services.AttachmentService;
 import it.chrccl.carrozzeriaonline.services.RepairCenterService;
 import it.chrccl.carrozzeriaonline.services.TaskService;
-
 import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Stream;
 
 @Slf4j
 @Component
@@ -47,16 +41,19 @@ public class CarRepairCenterState implements BotState {
 
     private final ImgBBComponent imgBBComponent;
 
+    private final IOComponent ioComponent;
+
     @Autowired
     public CarRepairCenterState(TwilioComponent twilio, TaskService taskService, RepairCenterService repairCenterService,
                                 AttachmentService attachmentService, EmailComponent emailComponent,
-                                ImgBBComponent imgBBComponent) {
+                                ImgBBComponent imgBBComponent, IOComponent ioComponent) {
         this.twilio = twilio;
         this.taskService = taskService;
         this.repairCenterService = repairCenterService;
         this.attachmentService = attachmentService;
         this.emailComponent = emailComponent;
         this.imgBBComponent = imgBBComponent;
+        this.ioComponent = ioComponent;
     }
 
     @Override
@@ -83,7 +80,7 @@ public class CarRepairCenterState implements BotState {
         }
         context.getTask().setStatus(TaskStatus.BOUNCING);
         taskService.save(context.getTask());
-        removeTmpLogs(fromNumber);
+        ioComponent.removeTmpLogs(fromNumber);
     }
 
     @Override
@@ -101,33 +98,16 @@ public class CarRepairCenterState implements BotState {
 
     private void sendTaskToCustomRepairCenter(BotContext context, List<Attachment> attachments,
                                               String fromNumber, String email, String phoneNumber) {
-        try{
-            PhoneNumber to = new PhoneNumber(fromNumber);
-            twilio.sendMessage(to, Constants.BOT_CARLINK_REPAIR_CENTER_CHOSEN_MESSAGE);
-            Path warrantPath = Path.of(String.format(Constants.USER_CARLINK_WARRANT_PATH_FORMAT, fromNumber));
-            String url = imgBBComponent.uploadImage(
-                    warrantPath.getParent().toString(), warrantPath.getFileName().toString()
-            );
-            twilio.sendMediaMessage(to, url);
-
-            Map<String, Object> variables = buildThymeleafVariables(context.getTask(), true);
-            emailComponent.sendTaskNotification(
-                    Constants.CARLINK_TASKS_EMAIL,
-                    String.format(Constants.TASK_EMAIL_SUBJECT, context.getTask().getLicensePlate()),
-                    variables,
-                    attachments,
-                    Constants.TEMPLATE_PARTNER_TASK_EMAIL
-            );
-            variables.put(ThymeleafVariables.REPAIR_CENTER_EMAIL_PLACEHOLDER, email);
-            variables.put(ThymeleafVariables.REPAIR_CENTER_PHONE_PLACEHOLDER, phoneNumber);
-            emailComponent.sendTaskNotification(
-                    email,
-                    String.format(Constants.TASK_EMAIL_SUBJECT, context.getTask().getLicensePlate()),
-                    variables,
-                    attachments,
-                    Constants.TEMPLATE_REPAIR_CENTER_TASK_EMAIL
-            );
-        }catch (IOException ignored){ }
+        Map<String, Object> variables = sendCarlinkCommunication(context, attachments, fromNumber);
+        variables.put(ThymeleafVariables.REPAIR_CENTER_EMAIL_PLACEHOLDER, email);
+        variables.put(ThymeleafVariables.REPAIR_CENTER_PHONE_PLACEHOLDER, phoneNumber);
+        emailComponent.sendTaskNotification(
+                email,
+                String.format(Constants.TASK_EMAIL_SUBJECT, context.getTask().getLicensePlate()),
+                variables,
+                attachments,
+                Constants.TEMPLATE_REPAIR_CENTER_TASK_EMAIL
+        );
     }
 
     private void sendTaskToChosenRepairCenter(BotContext context, List<Attachment> attachments, String fromNumber) {
@@ -138,33 +118,16 @@ public class CarRepairCenterState implements BotState {
     }
 
     private void sendTaskCarlinkRepairCenter(BotContext context, List<Attachment> attachments, String fromNumber) {
-        try{
-            PhoneNumber to = new PhoneNumber(fromNumber);
-            twilio.sendMessage(to, Constants.BOT_CARLINK_REPAIR_CENTER_CHOSEN_MESSAGE);
-            Path warrantPath = Path.of(String.format(Constants.USER_CARLINK_WARRANT_PATH_FORMAT, fromNumber));
-            String url = imgBBComponent.uploadImage(
-                    warrantPath.getParent().toString(), warrantPath.getFileName().toString()
-            );
-            twilio.sendMediaMessage(to, url);
-
-            Map<String, Object> variables = buildThymeleafVariables(context.getTask(), true);
+        Map<String, Object> variables = sendCarlinkCommunication(context, attachments, fromNumber);
+        if(context.getTask().getRepairCenter().getPartner() == Partner.INTERNAL){
             emailComponent.sendTaskNotification(
-                    Constants.CARLINK_TASKS_EMAIL,
+                    context.getTask().getRepairCenter().getEmail(),
                     String.format(Constants.TASK_EMAIL_SUBJECT, context.getTask().getLicensePlate()),
                     variables,
                     attachments,
-                    Constants.TEMPLATE_PARTNER_TASK_EMAIL
+                    Constants.TEMPLATE_REPAIR_CENTER_TASK_EMAIL
             );
-            if(context.getTask().getRepairCenter().getPartner() == Partner.INTERNAL){
-                emailComponent.sendTaskNotification(
-                        context.getTask().getRepairCenter().getEmail(),
-                        String.format(Constants.TASK_EMAIL_SUBJECT, context.getTask().getLicensePlate()),
-                        variables,
-                        attachments,
-                        Constants.TEMPLATE_REPAIR_CENTER_TASK_EMAIL
-                );
-            }
-        }catch (IOException ignored){ }
+        }
     }
 
     private void sendTaskSavoiaRepairCenter(BotContext context, List<Attachment> attachments, String fromNumber) {
@@ -177,7 +140,7 @@ public class CarRepairCenterState implements BotState {
             );
             twilio.sendMediaMessage(to, url);
 
-            Map<String, Object> variables = buildThymeleafVariables(context.getTask(), false);
+            Map<String, Object> variables = emailComponent.buildThymeleafVariables(context.getTask(), false);
             emailComponent.sendTaskNotification(
                     Constants.SAVOIA_TASKS_EMAIL,
                     String.format(Constants.TASK_EMAIL_SUBJECT, context.getTask().getLicensePlate()),
@@ -195,23 +158,26 @@ public class CarRepairCenterState implements BotState {
         }catch (IOException ignored){ }
     }
 
-    private Map<String, Object> buildThymeleafVariables(Task task, Boolean isCarlink){
-        Map<String, Object> variables = new HashMap<>();
-        variables.put(ThymeleafVariables.REPAIR_CENTER_NAME_PLACEHOLDER, task.getRepairCenter().getCompanyName());
-        variables.put(ThymeleafVariables.REPAIR_CENTER_EMAIL_PLACEHOLDER, task.getRepairCenter().getEmail());
-        variables.put(ThymeleafVariables.REPAIR_CENTER_PHONE_PLACEHOLDER, task.getRepairCenter().getPhoneNumber());
-        variables.put(ThymeleafVariables.USER_FULLNAME_PLACEHOLDER, task.getUser().getFullName());
-        variables.put(ThymeleafVariables.USER_PHONE_PLACEHOLDER, task.getUser().getMobilePhone());
-        variables.put(ThymeleafVariables.LICENSE_PLATE_PLACEHOLDER, task.getLicensePlate());
-        if(isCarlink){
-            variables.put(ThymeleafVariables.PARTNER_NAME_PLACEHOLDER, Partner.CARLINK.name());
-            variables.put(ThymeleafVariables.PARTNER_EMAIL_PLACEHOLDER, Constants.CARLINK_TASKS_EMAIL);
-            variables.put(ThymeleafVariables.IS_CARLINK_FLAG, true);
-        }else{
-            variables.put(ThymeleafVariables.PARTNER_NAME_PLACEHOLDER, Partner.SAVOIA.name());
-            variables.put(ThymeleafVariables.PARTNER_EMAIL_PLACEHOLDER, Constants.SAVOIA_TASKS_EMAIL);
-            variables.put(ThymeleafVariables.IS_CARLINK_FLAG, false);
-        }
+    private Map<String, Object> sendCarlinkCommunication(BotContext context, List<Attachment> attachments,
+                                                         String fromNumber) {
+        PhoneNumber to = new PhoneNumber(fromNumber);
+        twilio.sendMessage(to, Constants.BOT_CARLINK_REPAIR_CENTER_CHOSEN_MESSAGE);
+        Path warrantPath = Path.of(String.format(Constants.USER_CARLINK_WARRANT_PATH_FORMAT, fromNumber));
+        try {
+            String url = imgBBComponent.uploadImage(
+                    warrantPath.getParent().toString(), warrantPath.getFileName().toString()
+            );
+            twilio.sendMediaMessage(to, url);
+        }catch (IOException ignored){ }
+
+        Map<String, Object> variables = emailComponent.buildThymeleafVariables(context.getTask(), true);
+        emailComponent.sendTaskNotification(
+                Constants.CARLINK_TASKS_EMAIL,
+                String.format(Constants.TASK_EMAIL_SUBJECT, context.getTask().getLicensePlate()),
+                variables,
+                attachments,
+                Constants.TEMPLATE_PARTNER_TASK_EMAIL
+        );
         return variables;
     }
 
@@ -236,27 +202,6 @@ public class CarRepairCenterState implements BotState {
         String phone = phoneMatcher.group();
 
         return new String[]{ email, phone };
-    }
-
-    private void removeTmpLogs(String fromNumber) {
-        Path warrantPath = Path.of(String.format(Constants.USER_CARLINK_WARRANT_PATH_FORMAT, fromNumber));
-        if (!Files.exists(warrantPath)) {
-            log.debug("The directory does not exist: {}", warrantPath);
-            return;
-        }
-        // Walk the directory tree in reverse order (files first, then directories)
-        try (Stream<Path> paths = Files.walk(warrantPath)) {
-            paths.sorted(Comparator.reverseOrder())
-                    .forEach(path -> {
-                        try {
-                            Files.delete(path);
-                        } catch (IOException e) {
-                            log.error("Failed to delete: {} ({})", path, e.getMessage());
-                        }
-                    });
-        } catch (IOException e) {
-            log.error("Error while deleting tmp logs: {}", e.getMessage());
-        }
     }
 
 }
