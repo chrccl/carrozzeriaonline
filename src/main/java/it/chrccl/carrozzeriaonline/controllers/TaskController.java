@@ -9,13 +9,13 @@ import it.chrccl.carrozzeriaonline.model.dao.TaskId;
 import it.chrccl.carrozzeriaonline.model.dao.TaskStatus;
 import it.chrccl.carrozzeriaonline.model.dao.User;
 import it.chrccl.carrozzeriaonline.services.TaskService;
+
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -35,18 +35,7 @@ public class TaskController {
         this.botStatesFactory = botStatesFactory;
     }
 
-    /**
-     * Endpoint to receive incoming WhatsApp messages.
-     *
-     * @param fromNumber          the sender's phone number.
-     * @param messageBody         the message text.
-     * @param numMedia            the number of media attachments.
-     * @param contentTypeAttachment optional content type of the first media.
-     * @param mediaUrlAttachment    optional URL of the first media.
-     *
-     * @return a ResponseEntity with the processing status.
-     *
-     */
+
     @PostMapping("/handleWhatsappMessage")
     public ResponseEntity<String> sendWhatsappTest(@RequestParam("From") String fromNumber,
             @RequestParam("Body") String messageBody, @RequestParam("NumMedia") Integer numMedia,
@@ -78,6 +67,28 @@ public class TaskController {
             botContext.handle(fromNumber, messageData);
         }
         return ResponseEntity.ok("Message processed successfully.");
+    }
+
+    @GetMapping("/acceptIncarico/{telefono}/{ragioneSocialeCarrozzeria}/{timestamp}")
+    public ResponseEntity<String> acceptIncarico(
+            @PathVariable("telefono") String fromNumber,
+            @PathVariable("ragioneSocialeCarrozzeria") String companyName,
+            @PathVariable("timestamp")
+            @DateTimeFormat(pattern="yyyy-MM-dd'T'HH:mm:ss") LocalDateTime timestamp) {
+
+        //TODO: fetch the task with fromNumber and timestamp and then fetch the BRCPerTask list and extract that one
+        // that has the company name like that one passed in the url.
+        return ResponseEntity.ok("Incarico accepted for " + companyName + " at " + timestamp);
+    }
+
+    @GetMapping("/refuseIncarico/{telefono}/{timestamp}")
+    public ResponseEntity<String> refuseIncarico(
+            @PathVariable("telefono") String fromNumber,
+            @PathVariable("timestamp")
+            @DateTimeFormat(pattern="yyyy-MM-dd'T'HH:mm:ss") LocalDateTime timestamp) {
+
+        //TODO
+        return ResponseEntity.ok("Incarico refused for " + fromNumber + " at " + timestamp);
     }
     
 }
