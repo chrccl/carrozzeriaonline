@@ -17,6 +17,7 @@ import java.time.LocalDateTime;
 public class Task {
 
     @Id
+    @Column(name = "created_at")
     private LocalDateTime createdAt;
 
     private String licensePlate;
