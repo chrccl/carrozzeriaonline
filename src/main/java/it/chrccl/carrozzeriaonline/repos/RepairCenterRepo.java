@@ -24,7 +24,7 @@ public interface RepairCenterRepo extends JpaRepository<RepairCenter, Long> {
             "  )) AS distance " +
             "FROM repair_center r " +
             "JOIN cap c ON r.cap = c.cap " +
-            "ORDER BY distance ASC",
+            "ORDER BY distance",
             nativeQuery = true)
     List<RepairCenter> findRepairCentersOrderedByDistance(@Param("lat") Double lat,
                                                           @Param("lon") Double lon);
