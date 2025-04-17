@@ -52,6 +52,10 @@ public class TaskService {
         return repo.findTasksByPartner(partner, pageable);
     }
 
+    public List<Task> findTasksByStatus(TaskStatus status) {
+        return repo.findTasksByStatus(status);
+    }
+
     public Task save(Task task) {
         User taskUser = task.getUser();
         Optional<User> existingUser = userRepo.findById(taskUser.getMobilePhone());

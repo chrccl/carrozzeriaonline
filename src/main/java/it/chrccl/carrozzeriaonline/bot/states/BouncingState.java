@@ -15,6 +15,7 @@ import it.chrccl.carrozzeriaonline.services.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -103,14 +104,13 @@ public class BouncingState implements BotState {
         closestRepairCenter = repairCenterService.findClosestRepairCentersByCap(
                 data.getMessageBody(), repairCentersToAvoid
         ).get(0);
-        brcTaskService.save(new BRCPerTask(new BRCPerTaskId(context.getTask(), closestRepairCenter), false));
+        brcTaskService.save(new BRCPerTask(new BRCPerTaskId(context.getTask(), closestRepairCenter), LocalDateTime.now(), false));
 
         List<Attachment> attachments = attachmentService.findAttachmentsByTask(context.getTask());
-        sendTaskToChosenRepairCenter(context, attachments, fromNumber, closestRepairCenter);
+        sendTaskToChosenRepairCenter(context, attachments, closestRepairCenter);
     }
 
-    private void sendTaskToChosenRepairCenter(BotContext context, List<Attachment> attachments, String fromNumber,
-                                              RepairCenter rc) {
+    private void sendTaskToChosenRepairCenter(BotContext context, List<Attachment> attachments, RepairCenter rc) {
         switch (rc.getPartner()){
             case CARLINK, INTERNAL -> sendTaskCarlinkRepairCenter(context, attachments, rc);
             case SAVOIA -> sendTaskSavoiaRepairCenter(context, attachments, rc);

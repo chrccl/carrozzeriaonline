@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Data
 @AllArgsConstructor
@@ -14,6 +16,8 @@ public class BRCPerTask {
 
     @EmbeddedId
     private BRCPerTaskId BRCPerTaskId;
+
+    private LocalDateTime assignedAt;
 
     private Boolean accepted;
 

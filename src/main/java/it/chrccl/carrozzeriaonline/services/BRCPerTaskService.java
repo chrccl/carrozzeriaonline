@@ -19,7 +19,7 @@ public class BRCPerTaskService {
     }
 
     public List<BRCPerTask> findByTask(Task task) {
-        return repo.findBRCPerTasksByBCRPerTaskID_Task(task).orElse(null);
+        return repo.findBRCPerTasksByBRCPerTaskId_Task(task).orElse(null);
     }
 
     public BRCPerTask save(BRCPerTask brcPerTask) {

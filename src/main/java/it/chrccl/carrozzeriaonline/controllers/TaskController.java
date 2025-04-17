@@ -1,13 +1,13 @@
 package it.chrccl.carrozzeriaonline.controllers;
 
+import com.twilio.type.PhoneNumber;
 import it.chrccl.carrozzeriaonline.bot.BotContext;
 import it.chrccl.carrozzeriaonline.bot.BotState;
 import it.chrccl.carrozzeriaonline.bot.BotStatesFactory;
 import it.chrccl.carrozzeriaonline.bot.MessageData;
-import it.chrccl.carrozzeriaonline.model.dao.Task;
-import it.chrccl.carrozzeriaonline.model.dao.TaskId;
-import it.chrccl.carrozzeriaonline.model.dao.TaskStatus;
-import it.chrccl.carrozzeriaonline.model.dao.User;
+import it.chrccl.carrozzeriaonline.components.TwilioComponent;
+import it.chrccl.carrozzeriaonline.model.dao.*;
+import it.chrccl.carrozzeriaonline.services.BRCPerTaskService;
 import it.chrccl.carrozzeriaonline.services.TaskService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +17,8 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -26,12 +28,19 @@ public class TaskController {
 
     private final TaskService taskService;
 
+    private final BRCPerTaskService brcPerTaskService;
+
     private final BotStatesFactory botStatesFactory;
 
+    private final TwilioComponent twilioComponent;
+
     @Autowired
-    public TaskController(final TaskService taskService, final BotStatesFactory botStatesFactory) {
+    public TaskController(TaskService taskService, BRCPerTaskService brcPerTaskService,
+                          BotStatesFactory botStatesFactory, TwilioComponent twilioComponent) {
         this.taskService = taskService;
+        this.brcPerTaskService = brcPerTaskService;
         this.botStatesFactory = botStatesFactory;
+        this.twilioComponent = twilioComponent;
     }
 
 
@@ -54,7 +63,7 @@ public class TaskController {
         } else {
             task = Task.builder()
                     .id(new TaskId(fromNumber, LocalDateTime.now())).user(new User(fromNumber))
-                    .status(TaskStatus.INITIAL_STATE).isWeb(false).accepted(false)
+                    .status(TaskStatus.INITIAL_STATE).isWeb(false).accepted(false).createdAt(LocalDateTime.now())
                     .build();
             errorOccurred = false;
             currentBotState = botStatesFactory.getInitialState();
@@ -102,7 +111,27 @@ public class TaskController {
 
     @Scheduled(cron = "0 0 * * * *")
     public void checkTasksToBounce() {
-        //TODO
+        List<Task> tasks = taskService.findTasksByStatus(TaskStatus.BOUNCING);
+        tasks.forEach(task -> {
+            LocalDateTime now = LocalDateTime.now();
+            if (task.getCreatedAt().isBefore(now.minusDays(3))) {
+                task.setStatus(TaskStatus.DELETED);
+                taskService.save(task);
+                twilioComponent.sendUserDeletedTaskNotification(
+                        new PhoneNumber(task.getUser().getMobilePhone()),
+                        task.getUser()
+                );
+                return;
+            }
+
+            brcPerTaskService.findByTask(task).stream()
+                    .max(Comparator.comparing(BRCPerTask::getAssignedAt))
+                    .filter(brc -> brc.getAssignedAt().isBefore(now.minusHours(25)))
+                    .ifPresent(latest -> {
+                        new BotContext(botStatesFactory.getStateFromTask(task), task)
+                                .handleError(task.getUser().getMobilePhone(), null);
+                    });
+        });
     }
     
 }

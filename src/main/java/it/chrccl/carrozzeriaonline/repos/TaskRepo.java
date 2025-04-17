@@ -20,6 +20,8 @@ public interface TaskRepo extends JpaRepository<Task, TaskId> {
 
     List<Task> findTasksByPartner(Partner partner, Pageable pageable);
 
+    List<Task> findTasksByStatus(TaskStatus status);
+
     @Query("SELECT t FROM Task t WHERE t.user.mobilePhone = :fromNumber AND t.status NOT IN :excludedStatuses")
     Optional<Task> findOngoingTaskByPhoneNumber(
             @Param("mobilePhone") String mobilePhone,

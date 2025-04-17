@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
 import java.util.Base64;
 import java.util.List;
 import java.util.Map;
@@ -82,12 +83,12 @@ public class CarRepairCenterState implements BotState {
             twilio.sendMessage(to, Constants.BOT_CUSTOM_REPAIR_CENTER_CHOSEN_MESSAGE);
 
 
-            brcPerTaskService.save(new BRCPerTask(new BRCPerTaskId(context.getTask(), rc), false));
+            brcPerTaskService.save(new BRCPerTask(new BRCPerTaskId(context.getTask(), rc), LocalDateTime.now(), false));
         } else {
             rc = repairCenterService.findRepairCentersByCompanyNameIsLikeIgnoreCase(data.getMessageBody());
             sendTaskToChosenRepairCenter(context, attachments, fromNumber, rc);
         }
-        brcPerTaskService.save(new BRCPerTask(new BRCPerTaskId(context.getTask(), rc), false));
+        brcPerTaskService.save(new BRCPerTask(new BRCPerTaskId(context.getTask(), rc), LocalDateTime.now(), false));
 
         context.getTask().setStatus(TaskStatus.BOUNCING);
         taskService.save(context.getTask());

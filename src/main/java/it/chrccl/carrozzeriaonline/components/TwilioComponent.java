@@ -24,16 +24,20 @@ public class TwilioComponent {
     private static String AUTH_TOKEN;
 
     @Value("${twilio.messaging.sid}")
-    private static String MESSAGING_SID;
+    private String MESSAGING_SID;
 
     @Value("${twilio.repair.center.template.sid}")
-    private static String REPAIR_CENTER_TEMPLATE_SID;
+    private String REPAIR_CENTER_TEMPLATE_SID;
 
     @Value("${twilio.confmsg.nobouncing.sid}")
-    private static String CONFMG_NOBOUNCING_SID;
+    private String CONFMG_NOBOUNCING_SID;
 
     @Value("${twilio.confmsg.withbouncing.sid}")
-    private static String CONFMG_WITHBOUNCING_SID;
+    private String CONFMG_WITHBOUNCING_SID;
+
+    @Value("${twilio.deleted.task.msg.sid}")
+    private String DELETED_TASK_SID;
+
 
     static {
         Twilio.init(ACCOUNT_SID, AUTH_TOKEN);
@@ -70,6 +74,15 @@ public class TwilioComponent {
 
     public Message sendUserConfirmationMessageWithBouncing(PhoneNumber to, User user, RepairCenter repairCenter) {
         return buildVariablesForConfMsg(to, user, repairCenter, CONFMG_WITHBOUNCING_SID);
+    }
+
+    public Message sendUserDeletedTaskNotification(PhoneNumber to, User user) {
+        JSONObject contentVariables = new JSONObject();
+        contentVariables.put("nome_utente", user.getFullName().substring(0, user.getFullName().indexOf(' ')));
+        return Message.creator(to, MESSAGING_SID, "")
+                .setContentVariables(contentVariables.toString())
+                .setContentSid(DELETED_TASK_SID)
+                .create();
     }
 
     private Message buildVariablesForConfMsg(PhoneNumber to, User user, RepairCenter repairCenter, String confmgWithbouncingSid) {

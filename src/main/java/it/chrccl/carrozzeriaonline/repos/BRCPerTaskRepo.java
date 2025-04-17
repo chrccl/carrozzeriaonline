@@ -12,6 +12,6 @@ import java.util.Optional;
 @Repository
 public interface BRCPerTaskRepo extends JpaRepository<BRCPerTask, BRCPerTaskId> {
 
-    Optional<List<BRCPerTask>> findBRCPerTasksByBCRPerTaskID_Task(Task task);
+    Optional<List<BRCPerTask>> findBRCPerTasksByBRCPerTaskId_Task(Task task);
 
 }
