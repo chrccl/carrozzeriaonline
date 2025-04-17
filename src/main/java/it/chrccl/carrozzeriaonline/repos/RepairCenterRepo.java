@@ -15,8 +15,6 @@ public interface RepairCenterRepo extends JpaRepository<RepairCenter, Long> {
 
     Optional<RepairCenter> findRepairCentersByCompanyNameIsLikeIgnoreCase(String companyName);
 
-    List<RepairCenter> findRepairCentersByCap(String cap);
-
     List<RepairCenter> findRepairCentersByPartner(Partner partner);
 
     @Query(value = "SELECT r.*, " +
