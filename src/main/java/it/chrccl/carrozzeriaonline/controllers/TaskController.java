@@ -152,10 +152,8 @@ public class TaskController {
             brcPerTaskService.findByTask(task).stream()
                     .max(Comparator.comparing(BRCPerTask::getAssignedAt))
                     .filter(brc -> brc.getAssignedAt().isBefore(now.minusHours(25)))
-                    .ifPresent(latest -> {
-                        new BotContext(botStatesFactory.getStateFromTask(task), task)
-                                .handleError(task.getUser().getMobilePhone(), null);
-                    });
+                    .ifPresent(latest -> new BotContext(botStatesFactory.getStateFromTask(task), task)
+                            .handleError(task.getUser().getMobilePhone(), null));
         });
     }
 
