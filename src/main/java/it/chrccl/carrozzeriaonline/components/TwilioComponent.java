@@ -5,6 +5,7 @@ import com.twilio.rest.api.v2010.account.Message;
 import com.twilio.type.PhoneNumber;
 import it.chrccl.carrozzeriaonline.model.dao.RepairCenter;
 import it.chrccl.carrozzeriaonline.model.dao.User;
+import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,10 +19,10 @@ import java.util.List;
 public class TwilioComponent {
 
     @Value("${twilio.account.sid}")
-    private static String ACCOUNT_SID;
+    private String ACCOUNT_SID;
 
     @Value("${twilio.auth.token}")
-    private static String AUTH_TOKEN;
+    private String AUTH_TOKEN;
 
     @Value("${twilio.messaging.sid}")
     private String MESSAGING_SID;
@@ -41,8 +42,13 @@ public class TwilioComponent {
     @Value("${twilio.web.msg.sid}")
     private String WEB_MSG_SID;
 
-    static {
+    public TwilioComponent() { }
+
+    // Once Spring has injected the fields, initialize Twilio:
+    @PostConstruct
+    public void initTwilio() {
         Twilio.init(ACCOUNT_SID, AUTH_TOKEN);
+        log.info("Initialized Twilio with accountSid={}", ACCOUNT_SID);
     }
 
     public String getUserCredentials(){
