@@ -56,7 +56,6 @@ public class BotStatesFactory {
     public BotState getStateFromTask(Task task) {
         TaskStatus status = task.getStatus();
         return switch (status) {
-            case WEB           -> webState;
             case INITIAL_STATE -> initialState;
             case MULTIMEDIA    -> multimediaState;
             case DATE          -> dateState;
@@ -67,6 +66,7 @@ public class BotStatesFactory {
             case CAP           -> capState;
             case CAR_REPAIR_CENTER -> carRepairCenterState;
             case BOUNCING -> bouncingState;
+            case WEB           -> webState;
             default -> throw new IllegalStateException("Unexpected value: " + status);
         };
     }

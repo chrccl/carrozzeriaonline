@@ -38,6 +38,8 @@ public class TwilioComponent {
     @Value("${twilio.deleted.task.msg.sid}")
     private String DELETED_TASK_SID;
 
+    @Value("${twilio.web.msg.sid}")
+    private String WEB_MSG_SID;
 
     static {
         Twilio.init(ACCOUNT_SID, AUTH_TOKEN);
@@ -47,13 +49,16 @@ public class TwilioComponent {
         return ACCOUNT_SID + ":" + AUTH_TOKEN;
     }
 
-    public Message sendMessage(PhoneNumber to, String body) {
+    public void sendMessage(PhoneNumber to, String body) {
         Message msg = Message.creator(to, MESSAGING_SID, body).create();
         log.info(msg.getSid());
-        return msg;
     }
 
-    public Message sendRepairCentersProposalMessage(PhoneNumber to, List<RepairCenter> repairCenters) {
+    public void sendWebMessage(PhoneNumber to) {
+        Message.creator(to, WEB_MSG_SID, "").setContentSid(WEB_MSG_SID).create();
+    }
+
+    public void sendRepairCentersProposalMessage(PhoneNumber to, List<RepairCenter> repairCenters) {
         JSONObject contentVariables = new JSONObject();
         for (int i = 0; i < 3; i++) {
             RepairCenter center = repairCenters.get(i);
@@ -62,36 +67,48 @@ public class TwilioComponent {
             contentVariables.put("carrozzeria" + (i + 1), name);
         }
 
-        return Message.creator(to, MESSAGING_SID, "")
+        Message.creator(to, MESSAGING_SID, "")
                 .setContentVariables(contentVariables.toString())
                 .setContentSid(REPAIR_CENTER_TEMPLATE_SID)
                 .create();
     }
 
-    public Message sendUserConfirmationMessageNoBouncing(PhoneNumber to, User user, RepairCenter repairCenter) {
-        return buildVariablesForConfMsg(to, user, repairCenter, CONFMG_NOBOUNCING_SID);
+    public void sendUserConfirmationMessageNoBouncing(PhoneNumber to, User user, RepairCenter repairCenter) {
+        buildVariablesForConfMsg(to, user, repairCenter, CONFMG_NOBOUNCING_SID);
     }
 
-    public Message sendUserConfirmationMessageWithBouncing(PhoneNumber to, User user, RepairCenter repairCenter) {
-        return buildVariablesForConfMsg(to, user, repairCenter, CONFMG_WITHBOUNCING_SID);
+    public void sendUserConfirmationMessageWithBouncing(PhoneNumber to, User user, RepairCenter repairCenter) {
+        buildVariablesForConfMsg(to, user, repairCenter, CONFMG_WITHBOUNCING_SID);
     }
 
-    public Message sendUserDeletedTaskNotification(PhoneNumber to, User user) {
+    public void sendUserDeletedTaskNotification(PhoneNumber to, User user) {
         JSONObject contentVariables = new JSONObject();
         contentVariables.put("nome_utente", user.getFullName().substring(0, user.getFullName().indexOf(' ')));
-        return Message.creator(to, MESSAGING_SID, "")
+        Message.creator(to, MESSAGING_SID, "")
                 .setContentVariables(contentVariables.toString())
                 .setContentSid(DELETED_TASK_SID)
                 .create();
     }
 
-    private Message buildVariablesForConfMsg(PhoneNumber to, User user, RepairCenter repairCenter, String confmgWithbouncingSid) {
+    public void sendMediaMessage(PhoneNumber to, String body) {
+        Message msg = Message.creator(to, MESSAGING_SID, "").setMediaUrl(body).create();
+        log.info(msg.getSid());
+    }
+
+    public Message sendMediaMessages(PhoneNumber to, List<URI> body) {
+        Message msg = Message.creator(to, MESSAGING_SID, "").setMediaUrl(body).create();
+        log.info(msg.getSid());
+        return msg;
+    }
+
+
+    private void buildVariablesForConfMsg(PhoneNumber to, User user, RepairCenter repairCenter, String confmgWithbouncingSid) {
         JSONObject contentVariables = new JSONObject();
         contentVariables.put("nome_utente", user.getFullName().substring(0, user.getFullName().indexOf(' ')));
         contentVariables.put("nome_carrozzeria", formatRepairCenterName(repairCenter));
         contentVariables.put("telefono_carrozzeria", repairCenter.getPhoneNumber());
 
-        return Message.creator(to, MESSAGING_SID, "")
+        Message.creator(to, MESSAGING_SID, "")
                 .setContentVariables(contentVariables.toString())
                 .setContentSid(confmgWithbouncingSid)
                 .create();
@@ -102,18 +119,6 @@ public class TwilioComponent {
         return (companyName != null && companyName.length() > 19)
                 ? companyName.substring(0, 20)
                 : center.getCompanyName();
-    }
-
-    public Message sendMediaMessage(PhoneNumber to, String body) {
-        Message msg = Message.creator(to, MESSAGING_SID, "").setMediaUrl(body).create();
-        log.info(msg.getSid());
-        return msg;
-    }
-
-    public Message sendMediaMessages(PhoneNumber to, List<URI> body) {
-        Message msg = Message.creator(to, MESSAGING_SID, "").setMediaUrl(body).create();
-        log.info(msg.getSid());
-        return msg;
     }
 
 }

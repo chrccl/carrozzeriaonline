@@ -19,7 +19,7 @@ public class TaskService {
 
     private final UserRepo userRepo;
 
-    public static final List<TaskStatus> DEFAULT_EXCLUDED_STATUSES = List.of(TaskStatus.INITIAL_STATE, TaskStatus.WEB);
+    public static final List<TaskStatus> DEFAULT_EXCLUDED_STATUSES = List.of(TaskStatus.INITIAL_STATE);
 
     @Autowired
     public TaskService(TaskRepo repo, UserRepo userRepo) {

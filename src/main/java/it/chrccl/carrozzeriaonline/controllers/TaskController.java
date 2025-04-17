@@ -6,8 +6,12 @@ import it.chrccl.carrozzeriaonline.bot.BotState;
 import it.chrccl.carrozzeriaonline.bot.BotStatesFactory;
 import it.chrccl.carrozzeriaonline.bot.MessageData;
 import it.chrccl.carrozzeriaonline.components.TwilioComponent;
+import it.chrccl.carrozzeriaonline.model.Constants;
+import it.chrccl.carrozzeriaonline.model.WebTask;
 import it.chrccl.carrozzeriaonline.model.dao.*;
+import it.chrccl.carrozzeriaonline.services.AttachmentService;
 import it.chrccl.carrozzeriaonline.services.BRCPerTaskService;
+import it.chrccl.carrozzeriaonline.services.RepairCenterService;
 import it.chrccl.carrozzeriaonline.services.TaskService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,15 +38,21 @@ public class TaskController {
 
     private final TwilioComponent twilioComponent;
 
+    private final AttachmentService attachmentService;
+
+    private final RepairCenterService repairCenterService;
+
     @Autowired
     public TaskController(TaskService taskService, BRCPerTaskService brcPerTaskService,
-                          BotStatesFactory botStatesFactory, TwilioComponent twilioComponent) {
+                          BotStatesFactory botStatesFactory, TwilioComponent twilioComponent,
+                          AttachmentService attachmentService, RepairCenterService repairCenterService) {
         this.taskService = taskService;
         this.brcPerTaskService = brcPerTaskService;
         this.botStatesFactory = botStatesFactory;
         this.twilioComponent = twilioComponent;
+        this.attachmentService = attachmentService;
+        this.repairCenterService = repairCenterService;
     }
-
 
     @PostMapping("/handleWhatsappMessage")
     public ResponseEntity<String> sendWhatsappTest(@RequestParam("From") String fromNumber,
@@ -54,16 +64,15 @@ public class TaskController {
         BotContext botContext; BotState currentBotState; Task task; Boolean errorOccurred;
         if (optionalTask.isPresent()) {
             task = optionalTask.get();
-            if(numMedia > 0 && task.getStatus() != TaskStatus.MULTIMEDIA){
-                botContext = new BotContext(botStatesFactory.getMultimediaState(), task);
-                botContext.handle(fromNumber, messageData);
-            }
+            checkOutOfOrderMedia(task, numMedia, fromNumber, messageData);
+            if (task.getStatus() == TaskStatus.WEB) return handleWebTask(task, messageData, fromNumber);
+
             currentBotState = botStatesFactory.getStateFromTask(task);
             errorOccurred = currentBotState.verifyMessage(task, messageData);
         } else {
             task = Task.builder()
                     .id(new TaskId(fromNumber, LocalDateTime.now())).user(new User(fromNumber))
-                    .status(TaskStatus.INITIAL_STATE).isWeb(false).accepted(false).createdAt(LocalDateTime.now())
+                    .status(TaskStatus.INITIAL_STATE).isWeb(false).accepted(false)
                     .build();
             errorOccurred = false;
             currentBotState = botStatesFactory.getInitialState();
@@ -78,9 +87,26 @@ public class TaskController {
     }
 
     @PostMapping("handleWebPlatformIncomingTask")
-    public ResponseEntity<String> handleWebPlatformIncomingTask(@RequestBody Task task){
-        //TODO
-        return null;
+    public ResponseEntity<String> handleWebPlatformIncomingTask(@RequestBody WebTask webTask){
+        Task task = webTask.getTask();
+        List<Attachment> attachments = webTask.getAttachments();
+        String userPhone = Constants.TWILIO_PREFIX + task.getUser().getMobilePhone();
+        Optional<Task> optionalTask = taskService.findOngoingTaskByPhoneNumber(userPhone);
+        if(optionalTask.isPresent()) return ResponseEntity.internalServerError()
+                .body("Impossibile creare un nuovo incarico, ne hai già uno in corso sulla piattaforma Whatsapp.");
+
+        task.getUser().setMobilePhone(userPhone);
+        taskService.save(task);
+        attachmentService.saveAll(attachments);
+
+        RepairCenter rc = repairCenterService.findRepairCentersByCompanyNameIsLikeIgnoreCase(webTask.getCompanyName());
+        if (rc != null) {
+            brcPerTaskService.save(new BRCPerTask(new BRCPerTaskId(task, rc), task.getId().getCreatedAt(), false));
+            twilioComponent.sendWebMessage(new PhoneNumber(userPhone));
+            return ResponseEntity.ok("Message processed successfully.");
+        }else{
+            return ResponseEntity.internalServerError().body("No Repair Center associated to the request");
+        }
     }
 
     @GetMapping("/acceptIncarico/{telefono}/{ragioneSocialeCarrozzeria}/{timestamp}")
@@ -114,7 +140,7 @@ public class TaskController {
         List<Task> tasks = taskService.findTasksByStatus(TaskStatus.BOUNCING);
         tasks.forEach(task -> {
             LocalDateTime now = LocalDateTime.now();
-            if (task.getCreatedAt().isBefore(now.minusDays(3))) {
+            if (task.getId().getCreatedAt().isBefore(now.minusDays(3))) {
                 task.setStatus(TaskStatus.DELETED);
                 taskService.save(task);
                 twilioComponent.sendUserDeletedTaskNotification(
@@ -123,7 +149,6 @@ public class TaskController {
                 );
                 return;
             }
-
             brcPerTaskService.findByTask(task).stream()
                     .max(Comparator.comparing(BRCPerTask::getAssignedAt))
                     .filter(brc -> brc.getAssignedAt().isBefore(now.minusHours(25)))
@@ -132,6 +157,18 @@ public class TaskController {
                                 .handleError(task.getUser().getMobilePhone(), null);
                     });
         });
+    }
+
+    private ResponseEntity<String> handleWebTask(Task task, MessageData messageData, String fromNumber) {
+        new BotContext(botStatesFactory.getStateFromTask(task), task).handle(fromNumber, messageData);
+        return ResponseEntity.ok("Message processed successfully.");
+    }
+
+    private void checkOutOfOrderMedia(Task task, Integer numMedia, String fromNumber, MessageData data) {
+        if(numMedia > 0 && task.getStatus() != TaskStatus.MULTIMEDIA){
+            BotContext botContext = new BotContext(botStatesFactory.getMultimediaState(), task);
+            botContext.handle(fromNumber, data);
+        }
     }
     
 }
