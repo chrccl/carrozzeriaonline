@@ -2,7 +2,6 @@ package it.chrccl.carrozzeriaonline.model.dao;
 
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinColumns;
 import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -15,10 +14,7 @@ import lombok.NoArgsConstructor;
 public class BRCPerTaskId {
 
     @ManyToOne
-    @JoinColumns({
-            @JoinColumn(name = "task_userMobilePhone", referencedColumnName = "userMobilePhone"),
-            @JoinColumn(name = "task_createdAt", referencedColumnName = "createdAt")
-    })
+    @JoinColumn(name = "task_created_at", referencedColumnName = "created_at")
     private Task task;
 
     @ManyToOne

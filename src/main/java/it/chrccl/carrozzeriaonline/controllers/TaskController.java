@@ -71,7 +71,7 @@ public class TaskController {
             errorOccurred = currentBotState.verifyMessage(task, messageData);
         } else {
             task = Task.builder()
-                    .id(new TaskId(fromNumber, LocalDateTime.now())).user(new User(fromNumber))
+                    .createdAt(LocalDateTime.now()).user(new User(fromNumber))
                     .status(TaskStatus.INITIAL_STATE).isWeb(false).accepted(false)
                     .build();
             errorOccurred = false;
@@ -101,7 +101,7 @@ public class TaskController {
 
         RepairCenter rc = repairCenterService.findRepairCentersByCompanyNameIsLikeIgnoreCase(webTask.getCompanyName());
         if (rc != null) {
-            brcPerTaskService.save(new BRCPerTask(new BRCPerTaskId(task, rc), task.getId().getCreatedAt(), false));
+            brcPerTaskService.save(new BRCPerTask(new BRCPerTaskId(task, rc), task.getCreatedAt(), false));
             twilioComponent.sendWebMessage(new PhoneNumber(userPhone));
             return ResponseEntity.ok("Message processed successfully.");
         }else{
@@ -115,7 +115,7 @@ public class TaskController {
             @PathVariable("ragioneSocialeCarrozzeria") String companyName,
             @PathVariable("timestamp")
             @DateTimeFormat(pattern="yyyy-MM-dd'T'HH:mm:ss") LocalDateTime timestamp) {
-        Task task = taskService.findTaskById(new TaskId(fromNumber, timestamp));
+        Task task = taskService.findTaskById(timestamp);
         if(task != null && task.getStatus() == TaskStatus.BOUNCING){
             MessageData messageData = new MessageData(companyName, 0, null, null);
             new BotContext(botStatesFactory.getStateFromTask(task), task).handle(fromNumber, messageData);
@@ -128,7 +128,7 @@ public class TaskController {
             @PathVariable("telefono") String fromNumber,
             @PathVariable("timestamp")
             @DateTimeFormat(pattern="yyyy-MM-dd'T'HH:mm:ss") LocalDateTime timestamp) {
-        Task task = taskService.findTaskById(new TaskId(fromNumber, timestamp));
+        Task task = taskService.findTaskById(timestamp);
         if(task != null && task.getStatus() == TaskStatus.BOUNCING){
             new BotContext(botStatesFactory.getStateFromTask(task), task).handleError(fromNumber, null);
         }
@@ -140,7 +140,7 @@ public class TaskController {
         List<Task> tasks = taskService.findTasksByStatus(TaskStatus.BOUNCING);
         tasks.forEach(task -> {
             LocalDateTime now = LocalDateTime.now();
-            if (task.getId().getCreatedAt().isBefore(now.minusDays(3))) {
+            if (task.getCreatedAt().isBefore(now.minusDays(3))) {
                 task.setStatus(TaskStatus.DELETED);
                 taskService.save(task);
                 twilioComponent.sendUserDeletedTaskNotification(

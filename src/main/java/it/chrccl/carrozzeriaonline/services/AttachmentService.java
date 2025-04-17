@@ -26,8 +26,8 @@ public class AttachmentService {
         return repo.save(attachment);
     }
 
-    public List<Attachment> saveAll(List<Attachment> attachments) {
-        return repo.saveAll(attachments);
+    public void saveAll(List<Attachment> attachments) {
+        repo.saveAll(attachments);
     }
 
 }

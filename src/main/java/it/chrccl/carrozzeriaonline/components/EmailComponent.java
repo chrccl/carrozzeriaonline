@@ -87,7 +87,7 @@ public class EmailComponent {
         variables.put(ThymeleafVariables.USER_FULLNAME_PLACEHOLDER, task.getUser().getFullName());
         variables.put(ThymeleafVariables.USER_PHONE_PLACEHOLDER, task.getUser().getMobilePhone());
         variables.put(ThymeleafVariables.LICENSE_PLATE_PLACEHOLDER, task.getLicensePlate());
-        variables.put(ThymeleafVariables.TIMESTAMP, task.getId().getCreatedAt());
+        variables.put(ThymeleafVariables.TIMESTAMP, task.getCreatedAt());
         if(isCarlink){
             variables.put(ThymeleafVariables.PARTNER_NAME_PLACEHOLDER, Partner.CARLINK.name());
             variables.put(ThymeleafVariables.PARTNER_EMAIL_PLACEHOLDER, Constants.CARLINK_TASKS_EMAIL);

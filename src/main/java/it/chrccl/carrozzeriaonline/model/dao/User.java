@@ -1,5 +1,6 @@
 package it.chrccl.carrozzeriaonline.model.dao;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import lombok.Data;
@@ -11,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 public class User {
 
     @Id
+    @Column(name = "user_mobile_phone")
     private String mobilePhone;
 
     private String fullName;

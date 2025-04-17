@@ -26,11 +26,7 @@ public class Attachment {
     private String url;
 
     @ManyToOne
-    @JoinColumns({
-            @JoinColumn(name = "user_mobile_phone", referencedColumnName = "user_mobile_phone"),
-            @JoinColumn(name = "license_plate", referencedColumnName = "licensePlate"),
-            @JoinColumn(name = "date_time", referencedColumnName = "dateTime")
-    })
+    @JoinColumn(name = "task_created_at", referencedColumnName = "created_at")
     private Task task;
 
 }

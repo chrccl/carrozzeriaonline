@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Data
@@ -15,14 +16,13 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class Task {
 
-    @EmbeddedId
-    private TaskId id;
+    @Id
+    private LocalDateTime createdAt;
 
     private String licensePlate;
 
-    @MapsId("userMobilePhone")
     @ManyToOne
-    @JoinColumn(name = "user_mobile_phone")
+    @JoinColumn(name = "user_mobile_phone", referencedColumnName = "user_mobile_phone")
     private User user;
 
     private LocalDate accidentDate;

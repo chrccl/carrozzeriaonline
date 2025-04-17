@@ -1,7 +1,6 @@
 package it.chrccl.carrozzeriaonline.services;
 
 import it.chrccl.carrozzeriaonline.model.dao.Task;
-import it.chrccl.carrozzeriaonline.model.dao.TaskId;
 import it.chrccl.carrozzeriaonline.model.dao.TaskStatus;
 import it.chrccl.carrozzeriaonline.model.dao.User;
 import it.chrccl.carrozzeriaonline.repos.TaskRepo;
@@ -9,6 +8,7 @@ import it.chrccl.carrozzeriaonline.repos.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,8 +27,8 @@ public class TaskService {
         this.userRepo = userRepo;
     }
 
-    public Task findTaskById(TaskId id) {
-        return repo.findById(id).orElse(null);
+    public Task findTaskById(LocalDateTime createdAt) {
+        return repo.findById(createdAt).orElse(null);
     }
 
     public Optional<Task> findOngoingTaskByPhoneNumber(String fromNumber) {

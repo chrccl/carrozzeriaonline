@@ -19,10 +19,7 @@ public class OtpCheck {
     private String otpId;
 
     @ManyToOne
-    @JoinColumns({
-            @JoinColumn(name = "task_userMobilePhone", referencedColumnName = "userMobilePhone"),
-            @JoinColumn(name = "task_createdAt", referencedColumnName = "createdAt")
-    })
+    @JoinColumn(name = "task_created_at", referencedColumnName = "created_at")
     private Task task;
 
     private Boolean confirmed;
