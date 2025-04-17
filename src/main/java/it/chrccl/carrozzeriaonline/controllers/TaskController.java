@@ -1,6 +1,7 @@
 package it.chrccl.carrozzeriaonline.controllers;
 
 import com.twilio.type.PhoneNumber;
+
 import it.chrccl.carrozzeriaonline.bot.BotContext;
 import it.chrccl.carrozzeriaonline.bot.BotState;
 import it.chrccl.carrozzeriaonline.bot.BotStatesFactory;
@@ -13,7 +14,7 @@ import it.chrccl.carrozzeriaonline.services.AttachmentService;
 import it.chrccl.carrozzeriaonline.services.BRCPerTaskService;
 import it.chrccl.carrozzeriaonline.services.RepairCenterService;
 import it.chrccl.carrozzeriaonline.services.TaskService;
-import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +26,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
-@Slf4j
 @RestController
 @CrossOrigin(originPatterns = "*", allowedHeaders = "*")
 public class TaskController {

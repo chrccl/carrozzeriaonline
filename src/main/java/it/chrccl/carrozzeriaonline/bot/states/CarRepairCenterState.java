@@ -81,14 +81,11 @@ public class CarRepairCenterState implements BotState {
                     contactsOfCustomRepairCenter[0], contactsOfCustomRepairCenter[1], rc
             );
             twilio.sendMessage(to, Constants.BOT_CUSTOM_REPAIR_CENTER_CHOSEN_MESSAGE);
-
-
-            brcPerTaskService.save(new BRCPerTask(new BRCPerTaskId(context.getTask(), rc), LocalDateTime.now(), false));
         } else {
             rc = repairCenterService.findRepairCentersByCompanyNameIsLikeIgnoreCase(data.getMessageBody());
             sendTaskToChosenRepairCenter(context, attachments, fromNumber, rc);
         }
-        brcPerTaskService.save(new BRCPerTask(new BRCPerTaskId(context.getTask(), rc), LocalDateTime.now(), false));
+        brcPerTaskService.save(new BRCPerTask(new BRCPerTaskId(context.getTask(), rc),  LocalDateTime.now(), false));
 
         context.getTask().setStatus(TaskStatus.BOUNCING);
         taskService.save(context.getTask());
