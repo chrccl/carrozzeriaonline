@@ -73,7 +73,7 @@ public class BulkGateComponent {
         return false;
     }
 
-    public String resendOtp(String otpID) {
+    public void resendOtp(String otpID) {
         String jsonPayload = String.format(
                 "{ \"application_id\": \"%s\", \"application_token\": \"%s\", \"id\": \"%s\" }",
                 APPLICATION_ID, APPLICATION_TOKEN, otpID
@@ -87,14 +87,12 @@ public class BulkGateComponent {
             if (responseJson.has("data")) {
                 String newOtpId = responseJson.path("data").path("id").asText();
                 log.info("OTP resent successfully. New OTP ID: {}", newOtpId);
-                return newOtpId;
             } else {
                 log.error("Unexpected resendOtp API response: {}", response);
             }
         } catch (IOException e) {
             log.error("Error resending OTP for OTP ID {}: {}", otpID, e.getMessage(), e);
         }
-        return null;
     }
 
     private String sendPostRequest(String urlString, String jsonPayload) throws IOException {

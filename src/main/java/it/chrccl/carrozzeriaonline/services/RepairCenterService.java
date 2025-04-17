@@ -55,28 +55,12 @@ public class RepairCenterService {
         return repo.findRepairCentersByPartner(partner);
     }
 
-    public List<RepairCenter> findAllRepairCenters() {
-        return repo.findAll();
-    }
-
-    public RepairCenter findRepairCenterById(Long id) {
-        return repo.findById(id).orElse(null);
-    }
-
     public RepairCenter findRepairCentersByCompanyNameIsLikeIgnoreCase(String companyName) {
         return repo.findRepairCentersByCompanyNameIsLikeIgnoreCase(companyName).orElse(null);
     }
 
-    public List<RepairCenter> findRepairCentersByCAP(String cap) {
-        return repo.findRepairCentersByCap(cap);
-    }
-
     public RepairCenter save(RepairCenter repairCenter) {
         return repo.save(repairCenter);
-    }
-
-    public void delete(RepairCenter repairCenter) {
-        repo.delete(repairCenter);
     }
 
 }

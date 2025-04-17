@@ -18,14 +18,6 @@ public class AttachmentService {
         this.repo = repo;
     }
 
-    public List<Attachment> findAll() {
-        return repo.findAll();
-    }
-
-    public Attachment findById(Long id) {
-        return repo.findById(id).orElse(null);
-    }
-
     public List<Attachment> findAttachmentsByTask(Task task) {
         return repo.findAttachmentsByTask(task);
     }
@@ -36,10 +28,6 @@ public class AttachmentService {
 
     public List<Attachment> saveAll(List<Attachment> attachments) {
         return repo.saveAll(attachments);
-    }
-
-    public void delete(Attachment attachment) {
-        repo.delete(attachment);
     }
 
 }

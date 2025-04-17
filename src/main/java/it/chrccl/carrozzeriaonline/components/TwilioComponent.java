@@ -95,10 +95,9 @@ public class TwilioComponent {
         log.info(msg.getSid());
     }
 
-    public Message sendMediaMessages(PhoneNumber to, List<URI> body) {
+    public void sendMediaMessages(PhoneNumber to, List<URI> body) {
         Message msg = Message.creator(to, MESSAGING_SID, "").setMediaUrl(body).create();
         log.info(msg.getSid());
-        return msg;
     }
 
 
