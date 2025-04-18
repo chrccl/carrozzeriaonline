@@ -83,7 +83,7 @@ public class TaskController {
         }else{
             botContext.handle(fromNumber, messageData);
         }
-        return ResponseEntity.ok("Message processed successfully.");
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("handleWebPlatformIncomingTask")

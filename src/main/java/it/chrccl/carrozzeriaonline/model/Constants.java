@@ -130,4 +130,7 @@ public class Constants {
 
     public static final String TWILIO_PREFIX = "whatsapp:";
 
+
+    public static final Integer MIN_ATTACHMENTS_PER_TASK = 3;
+
 }

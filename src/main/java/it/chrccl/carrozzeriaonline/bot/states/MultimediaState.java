@@ -42,15 +42,17 @@ public class MultimediaState implements BotState {
     public void handleMessage(BotContext context, String fromNumber, MessageData data) {
         Attachment attachment = getAttachment(context, data);
         if (attachment != null) attachmentService.save(attachment);
-
+        List<Attachment> attachments = attachmentService.findAttachmentsByTask(context.getTask());
         PhoneNumber to = new PhoneNumber(fromNumber);
-        if(checkMinimumAttachmentsPerTask(context.getTask()) && context.getTask().getStatus() == TaskStatus.MULTIMEDIA){
+        if(context.getTask().getStatus() == TaskStatus.MULTIMEDIA
+                && (attachments.size() == Constants.MIN_ATTACHMENTS_PER_TASK
+                || attachments.stream().anyMatch(att -> att.getContentType().contains("pdf")))) {
             twilio.sendMessage(to, Constants.BOT_DATE_MESSAGE);
 
             context.getTask().setStatus(TaskStatus.DATE);
             taskService.save(context.getTask());
-        } else if (checkMinimumAttachmentsPerTask(context.getTask())
-                && context.getTask().getStatus() != TaskStatus.MULTIMEDIA) {
+        } else if (checkMinimumAttachmentsPerTask(context.getTask(), attachments)
+                    && context.getTask().getStatus() != TaskStatus.MULTIMEDIA) {
             twilio.sendMessage(to, Constants.BOT_OUT_OF_ORDER_ATTACHMENT);
         }
     }
@@ -91,6 +93,11 @@ public class MultimediaState implements BotState {
 
     private Boolean checkMinimumAttachmentsPerTask(Task task) {
         List<Attachment> attachments = attachmentService.findAttachmentsByTask(task);
+        return attachments.size() >= 3 ||
+                attachments.stream().anyMatch(attachment -> attachment.getContentType().contains("pdf"));
+    }
+
+    private Boolean checkMinimumAttachmentsPerTask(Task task, List<Attachment> attachments) {
         return attachments.size() >= 3 ||
                 attachments.stream().anyMatch(attachment -> attachment.getContentType().contains("pdf"));
     }
