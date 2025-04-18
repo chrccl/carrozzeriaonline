@@ -18,7 +18,7 @@ public interface TaskRepo extends JpaRepository<Task, LocalDateTime> {
 
     @Query("SELECT t FROM Task t WHERE t.user.mobilePhone = :fromNumber AND t.status NOT IN :excludedStatuses")
     Optional<Task> findOngoingTaskByPhoneNumber(
-            @Param("mobilePhone") String mobilePhone,
+            @Param("fromNumber") String fromNumber,
             @Param("excludedStatuses") List<TaskStatus> excludedStatuses
     );
 

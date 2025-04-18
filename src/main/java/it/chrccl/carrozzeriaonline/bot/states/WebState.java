@@ -88,8 +88,11 @@ public class WebState implements BotState {
     private void sendTaskSavoiaRepairCenter(BotContext context, List<Attachment> attachments, String fromNumber,
                                             RepairCenter rc) {
         PhoneNumber to = new PhoneNumber(fromNumber);
-        twilio.sendMessage(to, Constants.BOT_SAVOIA_REPAIR_CENTER_CHOSEN_MESSAGE);
-
+        twilio.sendMessage(
+                to,
+                String.format(Constants.BOT_SAVOIA_REPAIR_CENTER_CHOSEN_MESSAGE, rc.getCompanyName(),
+                        rc.getAddress(), rc.getCity(), rc.getPhoneNumber())
+        );
         twilio.sendMediaMessages(
                 to,
                 attachments.stream()
@@ -118,8 +121,11 @@ public class WebState implements BotState {
     private Map<String, Object> sendCarlinkCommunication(BotContext context, List<Attachment> attachments,
                                                          String fromNumber, RepairCenter rc) {
         PhoneNumber to = new PhoneNumber(fromNumber);
-        twilio.sendMessage(to, Constants.BOT_CARLINK_REPAIR_CENTER_CHOSEN_MESSAGE);
-
+        twilio.sendMessage(
+                to,
+                String.format(Constants.BOT_CARLINK_REPAIR_CENTER_CHOSEN_MESSAGE, rc.getCompanyName(),
+                        rc.getAddress(), rc.getCity())
+        );
         twilio.sendMediaMessages(
                 to,
                 attachments.stream()

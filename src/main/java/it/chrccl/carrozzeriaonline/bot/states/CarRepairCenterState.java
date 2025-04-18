@@ -146,7 +146,11 @@ public class CarRepairCenterState implements BotState {
                                             RepairCenter rc) {
         try{
             PhoneNumber to = new PhoneNumber(fromNumber);
-            twilio.sendMessage(to, Constants.BOT_SAVOIA_REPAIR_CENTER_CHOSEN_MESSAGE);
+            twilio.sendMessage(
+                    to,
+                    String.format(Constants.BOT_SAVOIA_REPAIR_CENTER_CHOSEN_MESSAGE, rc.getCompanyName(),
+                            rc.getAddress(), rc.getCity(), rc.getPhoneNumber())
+            );
             Path warrantPath = Path.of(String.format(Constants.USER_SAVOIA_WARRANT_PATH_FORMAT, fromNumber));
             String url = imgBBComponent.uploadImage(
                     warrantPath.getParent().toString(), warrantPath.getFileName().toString()
@@ -175,7 +179,11 @@ public class CarRepairCenterState implements BotState {
     private Map<String, Object> sendCarlinkCommunication(BotContext context, List<Attachment> attachments,
                                                          String fromNumber, RepairCenter rc) {
         PhoneNumber to = new PhoneNumber(fromNumber);
-        twilio.sendMessage(to, Constants.BOT_CARLINK_REPAIR_CENTER_CHOSEN_MESSAGE);
+        twilio.sendMessage(
+                to,
+                String.format(Constants.BOT_CARLINK_REPAIR_CENTER_CHOSEN_MESSAGE, rc.getCompanyName(),
+                        rc.getAddress(), rc.getCity())
+        );
         Path warrantPath = Path.of(String.format(Constants.USER_CARLINK_WARRANT_PATH_FORMAT, fromNumber));
         try {
             String url = imgBBComponent.uploadImage(

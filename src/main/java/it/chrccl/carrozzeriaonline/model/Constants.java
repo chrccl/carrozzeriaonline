@@ -76,14 +76,14 @@ public class Constants {
     public static final String BOT_CUSTOM_REPAIR_CENTER_CHOSEN_MESSAGE =
             "Richiesta inoltrata con successo, a breve verrai contattato dalla carrozzeria inserita.";
 
-    //TODO
-    public static final String BOT_CARLINK_REPAIR_CENTER_CHOSEN_MESSAGE = """   
-            
-            """;
+    public static final String BOT_CARLINK_REPAIR_CENTER_CHOSEN_MESSAGE = """
+            Richiesta inoltrata con successo a %s, %s, %s.
+            Per qualsiasi dubbio o informazione aggiuntiva sullo stato dell'incarico puoi chiamare: *0289618300* o\s
+            scrivere a *incarichi@car-link.it*.
+           \s""";
 
-    //TODO
     public static final String BOT_SAVOIA_REPAIR_CENTER_CHOSEN_MESSAGE = """
-            
+            Richiesta inoltrata con successo, a breve verrai contattato da: %s, %s, %s, %s.
             """;
 
     public static final String BOT_REPAIR_CENTER_NOT_KNOWN_MESSAGE = "Carrozzeria richiesta non riconosciuta, riprova.";
