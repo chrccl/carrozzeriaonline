@@ -11,7 +11,7 @@ public interface CapRepo  extends JpaRepository<CAP, String> {
 
     // Metodo per recuperare il CAP con valore numerico più vicino
     @Query(value = "SELECT * FROM cap " +
-            "ORDER BY ABS(CAST(cap AS UNSIGNED) - :targetVal) ASC " +
+            "ORDER BY ABS(CAST(cap AS SIGNED) - :targetVal) " +
             "LIMIT 1",
             nativeQuery = true)
     CAP findClosestCAPByNumericalOrder(@Param("targetVal") int targetVal);
