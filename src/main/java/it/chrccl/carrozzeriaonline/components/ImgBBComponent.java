@@ -27,14 +27,19 @@ public class ImgBBComponent {
     private String API_KEY;
 
     public String uploadImage(String imagePath, String fileName) throws IOException {
-        File sourceFile = validateSourceFile(imagePath + "/" + fileName);
-        log.info("Converting PDF {} to image...", imagePath);
-        File imageFile = convertPDFToImage(sourceFile, fileName);
-        String base64Image = encodeImageToBase64(imageFile);
-        HttpURLConnection connection = createConnection(base64Image);
-        int responseCode = connection.getResponseCode();
-        log.debug("Received HTTP response code: {}", responseCode);
-        return processResponse(connection, responseCode);
+        try{
+            File sourceFile = validateSourceFile(imagePath + "/" + fileName);
+            log.info("Converting PDF {} to image...", imagePath);
+            File imageFile = convertPDFToImage(sourceFile, fileName);
+            String base64Image = encodeImageToBase64(imageFile);
+            HttpURLConnection connection = createConnection(base64Image);
+            int responseCode = connection.getResponseCode();
+            log.debug("Received HTTP response code: {}", responseCode);
+            return processResponse(connection, responseCode);
+        }catch (IOException e) {
+            log.error("Error reading stream", e);
+            throw e;
+        }
     }
 
     private File validateSourceFile(String imagePath) {
@@ -104,6 +109,9 @@ public class ImgBBComponent {
             }
             byte[] imageBytes = baos.toByteArray();
             return Base64.getEncoder().encodeToString(imageBytes);
+        }catch (IOException e) {
+            log.error("Error reading stream", e);
+            throw e;
         }
     }
 
@@ -116,7 +124,7 @@ public class ImgBBComponent {
             File outputFile = new File(path.getParent().toString(), fileName + ".png");
             ImageIO.write(image, "PNG", outputFile);
             System.out.println("Saved: " + outputFile.getAbsolutePath());
-            return path.getParent().toString() + fileName + ".png";
+            return path.getParent().toString() + "/" + fileName + ".png";
         }
     }
 }
