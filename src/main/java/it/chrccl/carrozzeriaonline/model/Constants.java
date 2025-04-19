@@ -114,9 +114,9 @@ public class Constants {
 
 
 
-    public static final String CARLINK_WARRANT_PATH = "/opt/tomcat/dichiarazioneCarLink_compilabile.pdf";
+    public static final String CARLINK_WARRANT_PATH = "/opt/tomcat/warrantsTemplates/dichiarazioneCarLink_compilabile.pdf";
 
-    public static final String SAVOIA_WARRANT_PATH = "/opt/tomcat/mandatoSavoia.pdf";
+    public static final String SAVOIA_WARRANT_PATH = "/opt/tomcat/warrantsTemplates/mandatoSavoia.pdf";
 
     public static final String USER_CARLINK_WARRANT_PATH_FORMAT = "/opt/tomcat/%s/CarLink.pdf";
 
