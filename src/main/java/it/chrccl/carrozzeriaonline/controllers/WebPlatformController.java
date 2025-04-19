@@ -59,6 +59,7 @@ public class WebPlatformController {
         task.getUser().setMobilePhone(userPhone);
         OtpCheck usedOTP = otpCheckService.findByOtpId(webTask.getOtpId());
         usedOTP.setTask(taskService.save(task));
+        usedOTP.setConfirmed(true);
         otpCheckService.saveOtpCheck(usedOTP);
 
         attachmentService.saveAll(attachments);

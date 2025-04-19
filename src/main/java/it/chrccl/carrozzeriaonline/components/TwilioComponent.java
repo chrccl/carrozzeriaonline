@@ -61,7 +61,7 @@ public class TwilioComponent {
     }
 
     public void sendWebMessage(PhoneNumber to) {
-        Message.creator(to, WEB_MSG_SID, "").setContentSid(WEB_MSG_SID).create();
+        Message.creator(to, MESSAGING_SID, "").setContentSid(WEB_MSG_SID).create();
     }
 
     public void sendRepairCentersProposalMessage(PhoneNumber to, List<RepairCenter> repairCenters) {
