@@ -53,7 +53,7 @@ public class BouncingState implements BotState {
         List<BRCPerTask> brcsPerTask = brcTaskService.findByTask(context.getTask());
         List<RepairCenter> bouncedRepairCenters = brcsPerTask.stream()
                 .map(brc -> brc.getBRCPerTaskId().getRepairCenter())
-                .collect(Collectors.toList());
+                .toList();
         RepairCenter repairCenter = bouncedRepairCenters.stream()
                 .filter(rc -> rc.getCompanyName().contains(data.getMessageBody()))
                 .findFirst().orElse(null);
