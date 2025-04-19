@@ -33,7 +33,7 @@ public class IOComponent {
                 ? String.format(Constants.USER_CARLINK_WARRANT_PATH_FORMAT, userPhone)
                 : String.format(Constants.USER_SAVOIA_WARRANT_PATH_FORMAT, userPhone);
 
-        if (context.getTask().getStatus() == TaskStatus.DATE) {
+        if (context.getTask().getStatus() == TaskStatus.FULL_NAME) {
             copyAndRenameFile(templatePdfPath, outputPdfPath);
         }
         try (PDDocument document = PDDocument.load(new File(outputPdfPath))) {
