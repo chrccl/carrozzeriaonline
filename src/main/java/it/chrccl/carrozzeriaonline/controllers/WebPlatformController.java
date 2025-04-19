@@ -57,11 +57,14 @@ public class WebPlatformController {
                 .body("Impossibile creare un nuovo incarico, ne hai già uno in corso sulla piattaforma Whatsapp.");
 
         task.getUser().setMobilePhone(userPhone);
+        Task updatedTask = taskService.save(task);
+
         OtpCheck usedOTP = otpCheckService.findByOtpId(webTask.getOtpId());
-        usedOTP.setTask(taskService.save(task));
+        usedOTP.setTask(updatedTask);
         usedOTP.setConfirmed(true);
         otpCheckService.saveOtpCheck(usedOTP);
 
+        attachments.forEach(attachment -> attachment.setTask(updatedTask));
         attachmentService.saveAll(attachments);
         RepairCenter rc = repairCenterService.findRepairCentersByCompanyNameIsLikeIgnoreCase(webTask.getCompanyName());
         if (rc != null) {
