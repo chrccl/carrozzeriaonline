@@ -50,7 +50,7 @@ public class CFOrPIVAState implements BotState {
 
     @Override
     public Boolean verifyMessage(Task task, MessageData data) {
-        return isValidCF(data.getMessageBody().toUpperCase()) || isValidPIVA(data.getMessageBody().toUpperCase());
+        return !(isValidCF(data.getMessageBody().toUpperCase()) || isValidPIVA(data.getMessageBody().toUpperCase()));
     }
 
     @Override
