@@ -99,18 +99,26 @@ public class IOComponent {
     }
 
     private void copyAndRenameFile(String templatePdfPath, String outputPdfPath) {
+        File templateFile = new File(templatePdfPath);
+        if (!templateFile.exists()) {
+            log.error("Template file not found: {}", templatePdfPath);
+            return;
+        }
+        File outputFile = new File(outputPdfPath);
+        File parent = outputFile.getParentFile();
+        if (!parent.exists() && !parent.mkdirs()) {
+            log.error("Could not create output directory: {}", parent);
+            return;
+        }
         try {
-            File templateFile = new File(templatePdfPath);
-            File outputFile = new File(outputPdfPath);
-
-            // Only copy if the file does not already exist (to avoid unnecessary overwrites)
             if (!outputFile.exists()) {
-                Files.copy(templateFile.toPath(), outputFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                Files.copy(templateFile.toPath(),
+                        outputFile.toPath(),
+                        StandardCopyOption.REPLACE_EXISTING);
                 log.debug("Copied template PDF to: {}", outputPdfPath);
             }
         } catch (IOException e) {
-            log.error("Error while copying the PDF: {}", String.valueOf(e.getCause()));
-            return; // Stop execution if copying fails
+            log.error("Error while copying PDF from {} to {}", templatePdfPath, outputPdfPath, e);
         }
     }
 
