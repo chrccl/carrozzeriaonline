@@ -2,10 +2,10 @@ package it.chrccl.carrozzeriaonline.controllers;
 
 import com.twilio.type.PhoneNumber;
 
-import it.chrccl.carrozzeriaonline.bot.BotContext;
-import it.chrccl.carrozzeriaonline.bot.BotState;
-import it.chrccl.carrozzeriaonline.bot.BotStatesFactory;
-import it.chrccl.carrozzeriaonline.bot.MessageData;
+import it.chrccl.carrozzeriaonline.model.bot.BotContext;
+import it.chrccl.carrozzeriaonline.model.bot.BotState;
+import it.chrccl.carrozzeriaonline.model.bot.BotStatesFactory;
+import it.chrccl.carrozzeriaonline.model.bot.MessageData;
 import it.chrccl.carrozzeriaonline.components.TwilioComponent;
 import it.chrccl.carrozzeriaonline.model.Constants;
 import it.chrccl.carrozzeriaonline.model.WebTask;

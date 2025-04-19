@@ -1,6 +1,6 @@
 package it.chrccl.carrozzeriaonline.components;
 
-import it.chrccl.carrozzeriaonline.bot.BotContext;
+import it.chrccl.carrozzeriaonline.model.bot.BotContext;
 import it.chrccl.carrozzeriaonline.model.Constants;
 import it.chrccl.carrozzeriaonline.model.dao.Partner;
 import it.chrccl.carrozzeriaonline.model.dao.TaskStatus;

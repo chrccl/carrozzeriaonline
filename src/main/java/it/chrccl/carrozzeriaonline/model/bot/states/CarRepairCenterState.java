@@ -1,9 +1,9 @@
-package it.chrccl.carrozzeriaonline.bot.states;
+package it.chrccl.carrozzeriaonline.model.bot.states;
 
 import com.twilio.type.PhoneNumber;
-import it.chrccl.carrozzeriaonline.bot.BotContext;
-import it.chrccl.carrozzeriaonline.bot.BotState;
-import it.chrccl.carrozzeriaonline.bot.MessageData;
+import it.chrccl.carrozzeriaonline.model.bot.BotContext;
+import it.chrccl.carrozzeriaonline.model.bot.BotState;
+import it.chrccl.carrozzeriaonline.model.bot.MessageData;
 import it.chrccl.carrozzeriaonline.components.EmailComponent;
 import it.chrccl.carrozzeriaonline.components.IOComponent;
 import it.chrccl.carrozzeriaonline.components.ImgBBComponent;

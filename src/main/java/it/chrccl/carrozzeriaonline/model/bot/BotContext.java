@@ -1,4 +1,4 @@
-package it.chrccl.carrozzeriaonline.bot;
+package it.chrccl.carrozzeriaonline.model.bot;
 
 import it.chrccl.carrozzeriaonline.model.dao.Task;
 import lombok.Getter;
