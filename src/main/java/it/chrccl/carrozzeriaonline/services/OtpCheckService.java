@@ -23,8 +23,12 @@ public class OtpCheckService {
         return otpChecks.orElse(null);
     }
 
-    public OtpCheck saveOtpCheck(OtpCheck otpCheck) {
-        return repo.save(otpCheck);
+    public OtpCheck findByOtpId(String otpId) {
+        return repo.findByOtpId(otpId).orElse(null);
+    }
+
+    public void saveOtpCheck(OtpCheck otpCheck) {
+        repo.save(otpCheck);
     }
 
 }

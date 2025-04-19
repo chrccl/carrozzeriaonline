@@ -131,6 +131,10 @@ public class Constants {
     public static final String TWILIO_PREFIX = "whatsapp:";
 
 
+    public static final String ITALY_SMS_COUNTRY_CODE = "+39";
+
+
     public static final Integer MIN_ATTACHMENTS_PER_TASK = 3;
+
 
 }

@@ -2,13 +2,14 @@ package it.chrccl.carrozzeriaonline.controllers;
 
 import com.twilio.type.PhoneNumber;
 import it.chrccl.carrozzeriaonline.components.TwilioComponent;
-import it.chrccl.carrozzeriaonline.model.Constants;
-import it.chrccl.carrozzeriaonline.model.WebTask;
 import it.chrccl.carrozzeriaonline.model.bot.BotContext;
 import it.chrccl.carrozzeriaonline.model.bot.BotState;
 import it.chrccl.carrozzeriaonline.model.bot.BotStatesFactory;
 import it.chrccl.carrozzeriaonline.model.bot.MessageData;
-import it.chrccl.carrozzeriaonline.model.dao.*;
+import it.chrccl.carrozzeriaonline.model.dao.BRCPerTask;
+import it.chrccl.carrozzeriaonline.model.dao.Task;
+import it.chrccl.carrozzeriaonline.model.dao.TaskStatus;
+import it.chrccl.carrozzeriaonline.model.dao.User;
 import it.chrccl.carrozzeriaonline.services.AttachmentService;
 import it.chrccl.carrozzeriaonline.services.BRCPerTaskService;
 import it.chrccl.carrozzeriaonline.services.RepairCenterService;
@@ -62,8 +63,9 @@ public class TaskController {
         BotContext botContext; BotState currentBotState; Task task; Boolean errorOccurred;
         if (optionalTask.isPresent()) {
             task = optionalTask.get();
+
             checkOutOfOrderMedia(task, numMedia, fromNumber, messageData);
-            if (task.getStatus() == TaskStatus.WEB) return handleWebTask(task, messageData, fromNumber);
+            if (task.getIsWeb()) return handleWebTask(task, messageData, fromNumber);
 
             currentBotState = botStatesFactory.getStateFromTask(task);
             errorOccurred = currentBotState.verifyMessage(task, messageData);
@@ -82,29 +84,6 @@ public class TaskController {
             botContext.handle(fromNumber, messageData);
         }
         return ResponseEntity.ok().build();
-    }
-
-    @PostMapping("handleWebPlatformIncomingTask")
-    public ResponseEntity<String> handleWebPlatformIncomingTask(@RequestBody WebTask webTask){
-        Task task = webTask.getTask();
-        List<Attachment> attachments = webTask.getAttachments();
-        String userPhone = Constants.TWILIO_PREFIX + task.getUser().getMobilePhone();
-        Optional<Task> optionalTask = taskService.findOngoingTaskByPhoneNumber(userPhone);
-        if(optionalTask.isPresent()) return ResponseEntity.internalServerError()
-                .body("Impossibile creare un nuovo incarico, ne hai già uno in corso sulla piattaforma Whatsapp.");
-
-        task.getUser().setMobilePhone(userPhone);
-        taskService.save(task);
-        attachmentService.saveAll(attachments);
-
-        RepairCenter rc = repairCenterService.findRepairCentersByCompanyNameIsLikeIgnoreCase(webTask.getCompanyName());
-        if (rc != null) {
-            brcPerTaskService.save(new BRCPerTask(new BRCPerTaskId(task, rc), task.getCreatedAt(), false));
-            twilioComponent.sendWebMessage(new PhoneNumber(userPhone));
-            return ResponseEntity.ok("Message processed successfully.");
-        }else{
-            return ResponseEntity.internalServerError().body("No Repair Center associated to the request");
-        }
     }
 
     @GetMapping("/acceptIncarico/{telefono}/{ragioneSocialeCarrozzeria}/{timestamp}")

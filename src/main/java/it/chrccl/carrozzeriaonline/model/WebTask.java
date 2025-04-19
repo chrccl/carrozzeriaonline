@@ -19,4 +19,6 @@ public class WebTask {
 
     private String companyName;
 
+    private String otpId;
+
 }

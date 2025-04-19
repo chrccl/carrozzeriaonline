@@ -83,7 +83,7 @@ public class BouncingState implements BotState {
         return false;
     }
 
-    @Override   //Used for refuse task case
+    @Override   //Used for refuse task case and rebounce the task
     public void handleError(BotContext context, String fromNumber, MessageData data) {
         List<BRCPerTask> brcsPerTask = brcTaskService.findByTask(context.getTask());
         List<RepairCenter> bouncedRepairCenters = brcsPerTask.stream()

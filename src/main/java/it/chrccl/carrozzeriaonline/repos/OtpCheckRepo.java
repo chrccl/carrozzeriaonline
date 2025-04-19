@@ -11,6 +11,8 @@ import java.util.Optional;
 @Repository
 public interface OtpCheckRepo extends JpaRepository<OtpCheck, LocalDateTime> {
 
+    Optional<OtpCheck> findByOtpId(String otpId);
+
     Optional<OtpCheck> findTopByTaskOrderByTimestampDesc(Task task);
 
 }
