@@ -27,7 +27,7 @@ public class ImgBBComponent {
     private String API_KEY;
 
     public String uploadImage(String imagePath, String fileName) throws IOException {
-        File sourceFile = validateSourceFile(imagePath);
+        File sourceFile = validateSourceFile(imagePath + "/" + fileName);
         log.info("Converting PDF {} to image...", imagePath);
         File imageFile = convertPDFToImage(sourceFile, fileName);
         String base64Image = encodeImageToBase64(imageFile);
