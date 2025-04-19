@@ -1,7 +1,7 @@
 package it.chrccl.carrozzeriaonline.components;
 
-import it.chrccl.carrozzeriaonline.model.bot.BotContext;
 import it.chrccl.carrozzeriaonline.model.Constants;
+import it.chrccl.carrozzeriaonline.model.bot.BotContext;
 import it.chrccl.carrozzeriaonline.model.dao.Partner;
 import it.chrccl.carrozzeriaonline.model.dao.TaskStatus;
 import lombok.extern.slf4j.Slf4j;

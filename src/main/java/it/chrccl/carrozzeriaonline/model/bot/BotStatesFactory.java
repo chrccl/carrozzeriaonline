@@ -1,12 +1,9 @@
 package it.chrccl.carrozzeriaonline.model.bot;
 
-import it.chrccl.carrozzeriaonline.bot.states.*;
 import it.chrccl.carrozzeriaonline.model.bot.states.*;
 import it.chrccl.carrozzeriaonline.model.dao.Task;
 import it.chrccl.carrozzeriaonline.model.dao.TaskStatus;
-
 import lombok.Getter;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

@@ -1,18 +1,16 @@
 package it.chrccl.carrozzeriaonline.model.bot.states;
 
 import com.twilio.type.PhoneNumber;
-
-import it.chrccl.carrozzeriaonline.model.bot.BotContext;
-import it.chrccl.carrozzeriaonline.model.bot.BotState;
-import it.chrccl.carrozzeriaonline.model.bot.MessageData;
 import it.chrccl.carrozzeriaonline.components.IOComponent;
 import it.chrccl.carrozzeriaonline.components.TwilioComponent;
 import it.chrccl.carrozzeriaonline.model.Constants;
+import it.chrccl.carrozzeriaonline.model.bot.BotContext;
+import it.chrccl.carrozzeriaonline.model.bot.BotState;
+import it.chrccl.carrozzeriaonline.model.bot.MessageData;
 import it.chrccl.carrozzeriaonline.model.dao.Partner;
 import it.chrccl.carrozzeriaonline.model.dao.Task;
 import it.chrccl.carrozzeriaonline.model.dao.TaskStatus;
 import it.chrccl.carrozzeriaonline.services.TaskService;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

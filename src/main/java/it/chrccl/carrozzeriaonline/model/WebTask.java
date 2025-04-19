@@ -2,7 +2,6 @@ package it.chrccl.carrozzeriaonline.model;
 
 import it.chrccl.carrozzeriaonline.model.dao.Attachment;
 import it.chrccl.carrozzeriaonline.model.dao.Task;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
