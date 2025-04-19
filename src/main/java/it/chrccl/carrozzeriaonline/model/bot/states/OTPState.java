@@ -73,7 +73,12 @@ public class OTPState implements BotState {
     public Boolean verifyMessage(Task task, MessageData data) {
         OtpCheck otp = otpCheckService.findMostRecentOtpCheckByTask(task);
         if(otp != null) {
-            return !bulkGateComponent.verifyOtp(otp.getOtpId(), data.getMessageBody());
+            Boolean isWrong = !bulkGateComponent.verifyOtp(otp.getOtpId(), data.getMessageBody());
+            if(!isWrong){
+                otp.setConfirmed(true);
+                otpCheckService.saveOtpCheck(otp);
+            }
+            return isWrong;
         }else{
             return true;
         }

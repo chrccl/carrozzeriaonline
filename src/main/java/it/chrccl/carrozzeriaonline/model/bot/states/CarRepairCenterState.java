@@ -151,7 +151,10 @@ public class CarRepairCenterState implements BotState {
                     String.format(Constants.BOT_SAVOIA_REPAIR_CENTER_CHOSEN_MESSAGE, rc.getCompanyName(),
                             rc.getAddress(), rc.getCity(), rc.getPhoneNumber())
             );
-            Path warrantPath = Path.of(String.format(Constants.USER_SAVOIA_WARRANT_PATH_FORMAT, fromNumber));
+            Path warrantPath = Path.of(String.format(
+                    Constants.USER_SAVOIA_WARRANT_PATH_FORMAT,
+                    extractPhoneNumber(fromNumber))
+            );
             String url = imgBBComponent.uploadImage(
                     warrantPath.getParent().toString(), warrantPath.getFileName().toString()
             );
@@ -184,7 +187,10 @@ public class CarRepairCenterState implements BotState {
                 String.format(Constants.BOT_CARLINK_REPAIR_CENTER_CHOSEN_MESSAGE, rc.getCompanyName(),
                         rc.getAddress(), rc.getCity())
         );
-        Path warrantPath = Path.of(String.format(Constants.USER_CARLINK_WARRANT_PATH_FORMAT, fromNumber));
+        Path warrantPath = Path.of(
+                String.format(Constants.USER_CARLINK_WARRANT_PATH_FORMAT,
+                        extractPhoneNumber(fromNumber))
+        );
         try {
             String url = imgBBComponent.uploadImage(
                     warrantPath.getParent().toString(), warrantPath.getFileName().toString()
