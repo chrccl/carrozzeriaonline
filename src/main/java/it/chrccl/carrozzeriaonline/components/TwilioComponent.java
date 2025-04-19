@@ -102,10 +102,9 @@ public class TwilioComponent {
     }
 
     public void sendMediaMessages(PhoneNumber to, List<URI> body) {
-        Message msg = Message.creator(to, MESSAGING_SID, "").setMediaUrl(body).create();
+        Message msg = Message.creator(to, MESSAGING_SID, body).create();
         log.info(msg.getSid());
     }
-
 
     private void buildVariablesForConfMsg(PhoneNumber to, User user, RepairCenter repairCenter, String confmsgWithbouncingSid) {
         JSONObject contentVariables = new JSONObject();

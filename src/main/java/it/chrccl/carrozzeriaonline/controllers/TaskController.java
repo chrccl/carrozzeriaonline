@@ -10,9 +10,7 @@ import it.chrccl.carrozzeriaonline.model.dao.BRCPerTask;
 import it.chrccl.carrozzeriaonline.model.dao.Task;
 import it.chrccl.carrozzeriaonline.model.dao.TaskStatus;
 import it.chrccl.carrozzeriaonline.model.dao.User;
-import it.chrccl.carrozzeriaonline.services.AttachmentService;
 import it.chrccl.carrozzeriaonline.services.BRCPerTaskService;
-import it.chrccl.carrozzeriaonline.services.RepairCenterService;
 import it.chrccl.carrozzeriaonline.services.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -37,20 +35,13 @@ public class TaskController {
 
     private final TwilioComponent twilioComponent;
 
-    private final AttachmentService attachmentService;
-
-    private final RepairCenterService repairCenterService;
-
     @Autowired
     public TaskController(TaskService taskService, BRCPerTaskService brcPerTaskService,
-                          BotStatesFactory botStatesFactory, TwilioComponent twilioComponent,
-                          AttachmentService attachmentService, RepairCenterService repairCenterService) {
+                          BotStatesFactory botStatesFactory, TwilioComponent twilioComponent) {
         this.taskService = taskService;
         this.brcPerTaskService = brcPerTaskService;
         this.botStatesFactory = botStatesFactory;
         this.twilioComponent = twilioComponent;
-        this.attachmentService = attachmentService;
-        this.repairCenterService = repairCenterService;
     }
 
     @PostMapping("/handleWhatsappMessage")

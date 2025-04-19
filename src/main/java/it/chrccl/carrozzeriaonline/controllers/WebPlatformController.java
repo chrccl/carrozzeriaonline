@@ -67,7 +67,7 @@ public class WebPlatformController {
         if (rc != null) {
             brcPerTaskService.save(new BRCPerTask(new BRCPerTaskId(task, rc), task.getCreatedAt(), false));
             twilioComponent.sendWebMessage(new PhoneNumber(userPhone));
-            return ResponseEntity.ok("Message processed successfully.");
+            return ResponseEntity.ok().build();
         }else{
             return ResponseEntity.internalServerError().body("No Repair Center associated to the request");
         }
