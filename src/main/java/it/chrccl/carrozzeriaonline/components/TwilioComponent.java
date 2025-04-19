@@ -96,7 +96,7 @@ public class TwilioComponent {
                 .create();
     }
 
-    public void sendMediaMessage(PhoneNumber to, String body) {
+    public void sendMediaMessage(PhoneNumber to, URI body) {
         Message msg = Message.creator(to, MESSAGING_SID, "").setMediaUrl(body).create();
         log.info(msg.getSid());
     }
@@ -107,7 +107,7 @@ public class TwilioComponent {
     }
 
 
-    private void buildVariablesForConfMsg(PhoneNumber to, User user, RepairCenter repairCenter, String confmgWithbouncingSid) {
+    private void buildVariablesForConfMsg(PhoneNumber to, User user, RepairCenter repairCenter, String confmsgWithbouncingSid) {
         JSONObject contentVariables = new JSONObject();
         contentVariables.put("nome_utente", user.getFullName().substring(0, user.getFullName().indexOf(' ')));
         contentVariables.put("nome_carrozzeria", formatRepairCenterName(repairCenter));
@@ -115,7 +115,7 @@ public class TwilioComponent {
 
         Message.creator(to, MESSAGING_SID, "")
                 .setContentVariables(contentVariables.toString())
-                .setContentSid(confmgWithbouncingSid)
+                .setContentSid(confmsgWithbouncingSid)
                 .create();
     }
 

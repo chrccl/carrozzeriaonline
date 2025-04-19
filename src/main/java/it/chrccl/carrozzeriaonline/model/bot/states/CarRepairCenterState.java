@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -159,7 +160,7 @@ public class CarRepairCenterState implements BotState {
                     warrantPath.getParent().toString(), warrantPath.getFileName().toString()
             );
             attachments.add(saveWarrantAsAttachment(context, warrantPath, url));
-            twilio.sendMediaMessage(to, url);
+            twilio.sendMediaMessage(to, URI.create(url));
 
             Map<String, Object> variables = emailComponent.buildThymeleafVariables(context.getTask(), rc, false);
             emailComponent.sendTaskNotification(
@@ -196,7 +197,7 @@ public class CarRepairCenterState implements BotState {
                     warrantPath.getParent().toString(), warrantPath.getFileName().toString()
             );
             attachments.add(saveWarrantAsAttachment(context, warrantPath, url));
-            twilio.sendMediaMessage(to, url);
+            twilio.sendMediaMessage(to, URI.create(url));
         }catch (IOException ignored){ }
 
         Map<String, Object> variables = emailComponent.buildThymeleafVariables(context.getTask(), rc,true);
@@ -233,7 +234,6 @@ public class CarRepairCenterState implements BotState {
         Pattern phonePattern = Pattern.compile(phoneRegex);
         Matcher emailMatcher = emailPattern.matcher(message);
         Matcher phoneMatcher = phonePattern.matcher(message);
-
         if (!emailMatcher.find()) {
             return null;
         }
