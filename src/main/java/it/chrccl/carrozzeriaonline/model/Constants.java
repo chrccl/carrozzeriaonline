@@ -41,35 +41,16 @@ public class Constants {
     public static final String BOT_CAR_LICENCE_MESSAGE = "Scrivi la *TARGA* della tua auto.";
 
     public static final String BOT_SENDING_OTP_MESSAGE =
-            """
-            Ti abbiamo inviato un codice via SMS valido 15 minuti. Scrivilo qui in chat per autorizzarci al trattamento\s
-            dei dati da te forniti a fini esclusivamente identificativi e per confermare di voler delegare i nostri\s
-            partner al recupero dei crediti relativi ai danni subiti senza alcun costo a tuo carico. Se non ti è
-            arrivato, scrivi *RINVIA* in chat.
-           \s
-            In caso di concorsualità o torto nella dinamica del sinistro o decurtazioni dovute a scoperti e franchigie,
-            potrai comunque concordare con il riparatore costi e modalità dell'intervento alle migliori condizioni a te
-            riservate, con auto sostitutiva, ritiro e consegna a domicilio e lavaggio del veicolo.
-           \s
-            Visita www.carrozzeriaonline.com/privacy-policy per leggere l'informativa sulla privacy.
-           \s
-           """;
+            "Ti abbiamo inviato un codice via SMS valido 15 minuti. Scrivilo qui in chat per autorizzarci al trattamento dei dati da te forniti a fini esclusivamente identificativi e per confermare di voler delegare i nostri partner al recupero dei crediti relativi ai danni subiti senza alcun costo a tuo carico. Se non ti è arrivato, scrivi *RINVIA* in chat.\n" +
+                    "In caso di concorsualità o torto nella dinamica del sinistro o decurtazioni dovute a scoperti e franchigie, potrai comunque concordare con il riparatore costi e modalità dell'intervento alle migliori condizioni a te riservate, con auto sostitutiva, ritiro e consegna a domicilio e lavaggio del veicolo.\n" +
+                    "Visita www.carrozzeriaonline.com/privacy-policy per leggere l'informativa sulla privacy.";
+
 
     public static final String BOT_FALLBACK_SENDING_OTP_MESSAGE =
-            """
-            Il codice che ci hai fornito non è errato o scaduto.
-            Ti abbiamo inviato nuovamente un codice via SMS valido 15 minuti. Scrivilo qui in chat per autorizzarci al
-            trattamento dei dati da te forniti a fini esclusivamente identificativi e per confermare di voler delegare i
-            nostri partner al recupero dei crediti relativi ai danni subiti senza alcun costo a tuo carico. Se non ti è
-            arrivato, scrivi *RINVIA* in chat.
-           \s
-            In caso di concorsualità o torto nella dinamica del sinistro o decurtazioni dovute a scoperti e franchigie,
-            potrai comunque concordare con il riparatore costi e modalità dell'intervento alle migliori condizioni a te
-            riservate, con auto sostitutiva, ritiro e consegna a domicilio e lavaggio del veicolo.
-           \s
-            Visita www.carrozzeriaonline.com/privacy-policy per leggere l'informativa sulla privacy.
-           \s
-           """;
+            "Il codice che ci hai fornito non è errato o scaduto. Ti abbiamo inviato nuovamente un codice via SMS valido 15 minuti. Scrivilo qui in chat per autorizzarci al trattamento dei dati da te forniti a fini esclusivamente identificativi e per confermare di voler delegare i nostri partner al recupero dei crediti relativi ai danni subiti senza alcun costo a tuo carico. Se non ti è arrivato, scrivi *RINVIA* in chat.\n" +
+                    "In caso di concorsualità o torto nella dinamica del sinistro o decurtazioni dovute a scoperti e franchigie, potrai comunque concordare con il riparatore costi e modalità dell'intervento alle migliori condizioni a te riservate, con auto sostitutiva, ritiro e consegna a domicilio e lavaggio del veicolo.\n" +
+                    "Visita www.carrozzeriaonline.com/privacy-policy per leggere l'informativa sulla privacy.";
+
 
     public static final String BOT_CAP_MESSAGE = "Scrivi il tuo *CAP* per individuare la carrozzeria più vicina a te.";
 
@@ -118,6 +99,8 @@ public class Constants {
 
     public static final String SAVOIA_WARRANT_PATH = "/opt/tomcat/warrantsTemplates/mandatoSavoia.pdf";
 
+    public static final String USER_WARRANT_DIRECTORY_PATH_FORMAT = "/opt/tomcat/%s";
+
     public static final String USER_CARLINK_WARRANT_PATH_FORMAT = "/opt/tomcat/%s/CarLink.pdf";
 
     public static final String USER_SAVOIA_WARRANT_PATH_FORMAT = "/opt/tomcat/%s/Savoia.pdf";
@@ -127,12 +110,19 @@ public class Constants {
     public static final String WARRANT_CONTENT_TYPE = "application/pdf";
 
 
+    public static final String SQUILLACE_REPORT_PATH = "/opt/tomcat/Squillace/report.txt";
+
+    public static final String SQUILLACE_INSTAGRAM_PAGE = "https://www.instagram.com/nunziosquillace?igsh=MWc0emZ3dGx6NTUyOA%3D%3D&utm_source=qr";
+
+
+    public static final String ACCEPTED_TASK_PAGE = "https://incarico-accettato.carrozzeriaonline.com/";
+
+    public static final String REJECTED_TASK_PAGE = "https://incarico-rifiutato.carrozzeriaonline.com/";
+
 
     public static final String TWILIO_PREFIX = "whatsapp:";
 
-
     public static final String ITALY_SMS_COUNTRY_CODE = "+39";
-
 
     public static final Integer MIN_ATTACHMENTS_PER_TASK = 3;
 

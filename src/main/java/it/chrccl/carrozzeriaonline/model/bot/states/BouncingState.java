@@ -70,7 +70,7 @@ public class BouncingState implements BotState {
         context.getTask().setStatus(TaskStatus.ACCEPTED);
         taskService.save(context.getTask());
 
-        PhoneNumber to = new PhoneNumber(Constants.TWILIO_PREFIX + fromNumber);
+        PhoneNumber to = new PhoneNumber(fromNumber);
         if(bouncedRepairCenters.size() == 1){
             twilioComponent.sendUserConfirmationMessageNoBouncing(to, context.getTask().getUser(), repairCenter);
         }else{
@@ -108,6 +108,10 @@ public class BouncingState implements BotState {
 
         List<Attachment> attachments = attachmentService.findAttachmentsByTask(context.getTask());
         sendTaskToChosenRepairCenter(context, attachments, closestRepairCenter);
+
+        context.getTask().setAccepted(false);
+        context.getTask().setStatus(TaskStatus.DELETED);
+        taskService.save(context.getTask());
     }
 
     private void sendTaskToChosenRepairCenter(BotContext context, List<Attachment> attachments, RepairCenter rc) {

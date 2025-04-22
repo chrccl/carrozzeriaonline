@@ -2,6 +2,7 @@ package it.chrccl.carrozzeriaonline.controllers;
 
 import com.twilio.type.PhoneNumber;
 import it.chrccl.carrozzeriaonline.components.TwilioComponent;
+import it.chrccl.carrozzeriaonline.model.Constants;
 import it.chrccl.carrozzeriaonline.model.bot.BotContext;
 import it.chrccl.carrozzeriaonline.model.bot.BotState;
 import it.chrccl.carrozzeriaonline.model.bot.BotStatesFactory;
@@ -17,6 +18,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.view.RedirectView;
 
 import java.time.LocalDateTime;
 import java.util.Comparator;
@@ -78,7 +80,7 @@ public class TaskController {
     }
 
     @GetMapping("/acceptIncarico/{telefono}/{ragioneSocialeCarrozzeria}/{timestamp}")
-    public ResponseEntity<String> acceptIncarico(
+    public RedirectView acceptIncarico(
             @PathVariable("telefono") String fromNumber,
             @PathVariable("ragioneSocialeCarrozzeria") String companyName,
             @PathVariable("timestamp")
@@ -88,11 +90,11 @@ public class TaskController {
             MessageData messageData = new MessageData(companyName, 0, null, null);
             new BotContext(botStatesFactory.getStateFromTask(task), task).handle(fromNumber, messageData);
         }
-        return ResponseEntity.ok("Incarico accepted for " + companyName + " at " + timestamp);
+        return new RedirectView(Constants.ACCEPTED_TASK_PAGE);
     }
 
     @GetMapping("/refuseIncarico/{telefono}/{timestamp}")
-    public ResponseEntity<String> refuseIncarico(
+    public RedirectView refuseIncarico(
             @PathVariable("telefono") String fromNumber,
             @PathVariable("timestamp")
             @DateTimeFormat(pattern="yyyy-MM-dd'T'HH:mm:ss") LocalDateTime timestamp) {
@@ -100,7 +102,7 @@ public class TaskController {
         if(task != null && task.getStatus() == TaskStatus.BOUNCING){
             new BotContext(botStatesFactory.getStateFromTask(task), task).handleError(fromNumber, null);
         }
-        return ResponseEntity.ok("Incarico refused for " + fromNumber + " at " + timestamp);
+        return new RedirectView(Constants.REJECTED_TASK_PAGE);
     }
 
     @Scheduled(cron = "0 0 * * * *")

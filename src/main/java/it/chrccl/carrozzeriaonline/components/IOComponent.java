@@ -3,6 +3,7 @@ package it.chrccl.carrozzeriaonline.components;
 import it.chrccl.carrozzeriaonline.model.Constants;
 import it.chrccl.carrozzeriaonline.model.bot.BotContext;
 import it.chrccl.carrozzeriaonline.model.dao.Partner;
+import it.chrccl.carrozzeriaonline.model.dao.RepairCenter;
 import it.chrccl.carrozzeriaonline.model.dao.TaskStatus;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -12,13 +13,12 @@ import org.apache.pdfbox.pdmodel.font.PDType0Font;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.springframework.stereotype.Component;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
-import java.util.Comparator;
-import java.util.stream.Stream;
+import java.nio.file.*;
+import java.nio.file.attribute.BasicFileAttributes;
 
 @Slf4j
 @Component
@@ -78,23 +78,34 @@ public class IOComponent {
     }
 
     public void removeTmpLogs(String fromNumber) {
-        Path warrantPath = Path.of(String.format(Constants.USER_CARLINK_WARRANT_PATH_FORMAT, fromNumber));
-        if (!Files.exists(warrantPath)) {
-            log.debug("The directory does not exist: {}", warrantPath);
-            return;
-        }
-        // Walk the directory tree in reverse order (files first, then directories)
-        try (Stream<Path> paths = Files.walk(warrantPath)) {
-            paths.sorted(Comparator.reverseOrder())
-                    .forEach(path -> {
-                        try {
-                            Files.delete(path);
-                        } catch (IOException e) {
-                            log.error("Failed to delete: {} ({})", path, e.getMessage());
-                        }
-                    });
+        Path dir = Paths.get(String.format(Constants.USER_WARRANT_DIRECTORY_PATH_FORMAT, fromNumber));
+
+        try {
+            Files.walkFileTree(dir, new SimpleFileVisitor<>() {
+                @Override
+                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                    Files.delete(file);
+                    return FileVisitResult.CONTINUE;
+                }
+
+                @Override
+                public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+                    Files.delete(dir);
+                    return FileVisitResult.CONTINUE;
+                }
+            });
+
+            log.info("Directory and all contents deleted");
         } catch (IOException e) {
-            log.error("Error while deleting tmp logs: {}", e.getMessage());
+            log.error("Failed to delete directory: {}", e.getMessage());
+        }
+    }
+
+    public void addToReportNoleggioSquillace(RepairCenter rc){
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(Constants.SQUILLACE_REPORT_PATH))) {
+            writer.write(rc.toString());
+        } catch (IOException e) {
+            log.error("Failed to write to Squillace Report: {}", e.getMessage());
         }
     }
 

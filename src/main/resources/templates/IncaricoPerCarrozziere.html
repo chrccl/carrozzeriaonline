@@ -57,8 +57,10 @@
 </head>
 <body>
   <div class="container">
+    <!--
     <h2 class="text-primary text-center">Carrozzeria Online - NUOVO INCARICO</h2>
     <h3 class="text-center">Targa: <strong th:text="${targaDanneggiato}"></strong></h3><br>
+    -->
     <p>Gentile <strong th:text="${ragioneSocialeCarrozzeria}"></strong>,</p>
     <p>Le è stato affidato un nuovo incarico relativo al veicolo targato <strong th:text="${targaDanneggiato}"></strong>.</p>
     <p><strong>Contatta il danneggiato:</strong></p>
@@ -69,6 +71,8 @@
     <p><strong>Per qualsiasi informazione contattare il gestore:</strong></p>
     <ul>
       <li>Nome: <strong th:text="${nomeGestore}"></strong></li>
+      <li>Cellulare: <strong th:if="${isCarlink}">02.89618300</strong></li>
+      <li>Cellulare: <strong th:unless="${isCarlink}">3486287763</strong></li>
       <li>Email: <strong th:text="${emailGestore}"></strong></li>
     </ul>
     <p>Se risulta disponibile per gestire l'incarico fare click su <strong>Accetta</strong>, altrimenti su <strong>Rifiuta</strong> per farlo rimbalzare alla carrozzeria più vicina.</p>
@@ -91,17 +95,7 @@
       <li>Lavaggio auto.</li>
     </ul>
     <hr>
-	<div class="container text-center">
-	    <h4 class="text-primary fw-bold">Noleggio a Lungo Termine</h4>
-	    <p>
-	        Scopri le migliori soluzioni di <strong>noleggio a lungo termine</strong> grazie alla collaborazione con ii nostri partner! Offriamo una vasta gamma di veicoli con condizioni vantaggiose e assistenza dedicata.
-	        <a th:href="@{https://env-4086303.it1.eur.aruba.jenv-aruba.cloud/carrozzeriaonlineapi/addToReportNoleggioSquillace/{ragioneSocialeCarrozzeria}(ragioneSocialeCarrozzeria=${ragioneSocialeCarrozzeria})}" 
-		    	target="_blank">
-		        Scopri di più
-		    </a>
-	    </p>
-	</div>
-      <div class="text-center">
+    <div class="text-center">
           <a th:href="@{https://env-4086303.it1.eur.aruba.jenv-aruba.cloud/carrozzeriaonlineapi/acceptIncarico/{telefono}/{ragioneSocialeCarrozzeria}/{timestamp}(telefono=${telefonoDanneggiato}, ragioneSocialeCarrozzeria=${ragioneSocialeCarrozzeria}, timestamp=${#temporals.format(timestamp, 'yyyy-MM-dd''T''HH:mm:ss.SSSSSS')})}"
              class="btn btn-success">
               Accetta
@@ -111,7 +105,18 @@
              class="btn btn-danger">
               Rifiuta
           </a>
-      </div>
+    </div>
+    <hr>
+    <div class="container text-center">
+      <h4 class="text-primary fw-bold">Noleggio a Lungo Termine</h4>
+      <p>
+        Scopri le migliori soluzioni di <strong>noleggio a lungo termine</strong> grazie alla collaborazione con ii nostri partner! Offriamo una vasta gamma di veicoli con condizioni vantaggiose e assistenza dedicata.
+        <a th:href="@{https://env-4086303.it1.eur.aruba.jenv-aruba.cloud/carrozzeriaonlineapi/addToReportNoleggioSquillace/{ragioneSocialeCarrozzeria}(ragioneSocialeCarrozzeria=${ragioneSocialeCarrozzeria})}"
+           target="_blank">
+          Scopri di più
+        </a>
+      </p>
+    </div>
   </div>
 </body>
 </html>
