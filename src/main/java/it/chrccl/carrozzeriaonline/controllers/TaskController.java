@@ -89,8 +89,10 @@ public class TaskController {
         if(task != null && task.getStatus() == TaskStatus.BOUNCING){
             MessageData messageData = new MessageData(companyName, 0, null, null);
             new BotContext(botStatesFactory.getStateFromTask(task), task).handle(fromNumber, messageData);
+            return new RedirectView(Constants.ACCEPTED_TASK_PAGE);
+        }else{
+            return new RedirectView(Constants.TASK_ALREADY_ACCEPTED_PAGE);
         }
-        return new RedirectView(Constants.ACCEPTED_TASK_PAGE);
     }
 
     @GetMapping("/refuseIncarico/{telefono}/{timestamp}")
@@ -101,8 +103,10 @@ public class TaskController {
         Task task = taskService.findTaskById(timestamp);
         if(task != null && task.getStatus() == TaskStatus.BOUNCING){
             new BotContext(botStatesFactory.getStateFromTask(task), task).handleError(fromNumber, null);
+            return new RedirectView(Constants.REJECTED_TASK_PAGE);
+        }else{
+            return new RedirectView(Constants.TASK_ALREADY_ACCEPTED_PAGE);
         }
-        return new RedirectView(Constants.REJECTED_TASK_PAGE);
     }
 
     @Scheduled(cron = "0 0 * * * *")

@@ -117,6 +117,8 @@ public class Constants {
 
     public static final String ACCEPTED_TASK_PAGE = "https://incarico-accettato.carrozzeriaonline.com/";
 
+    public static final String TASK_ALREADY_ACCEPTED_PAGE = "https://incarico-gia-accettato.carrozzeriaonline.com/";
+
     public static final String REJECTED_TASK_PAGE = "https://incarico-rifiutato.carrozzeriaonline.com/";
 
 

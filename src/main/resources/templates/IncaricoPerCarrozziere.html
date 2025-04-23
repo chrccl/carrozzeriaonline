@@ -75,8 +75,6 @@
       <li>Cellulare: <strong th:unless="${isCarlink}">3486287763</strong></li>
       <li>Email: <strong th:text="${emailGestore}"></strong></li>
     </ul>
-    <p>Se risulta disponibile per gestire l'incarico fare click su <strong>Accetta</strong>, altrimenti su <strong>Rifiuta</strong> per farlo rimbalzare alla carrozzeria più vicina.</p>
-    <p>Distinti Saluti,<br><strong>Carrozzeria Online</strong></p>
     <hr>
     <h5>Condizioni economiche:</h5>
     <ul th:if="${isCarlink}">
@@ -95,6 +93,8 @@
       <li>Lavaggio auto.</li>
     </ul>
     <hr>
+    <p>Se accetta l'incarico faccia click sul tasto <strong>Accetta</strong>, altrimenti su <strong>Rifiuta</strong> per farlo rimbalzare alla carrozzeria più vicina.</p>
+    <p>Distinti Saluti,<br><strong>Carrozzeria Online</strong></p>
     <div class="text-center">
           <a th:href="@{https://env-4086303.it1.eur.aruba.jenv-aruba.cloud/carrozzeriaonlineapi/acceptIncarico/{telefono}/{ragioneSocialeCarrozzeria}/{timestamp}(telefono=${telefonoDanneggiato}, ragioneSocialeCarrozzeria=${ragioneSocialeCarrozzeria}, timestamp=${#temporals.format(timestamp, 'yyyy-MM-dd''T''HH:mm:ss.SSSSSS')})}"
              class="btn btn-success">
