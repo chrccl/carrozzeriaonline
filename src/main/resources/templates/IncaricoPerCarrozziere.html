@@ -101,7 +101,7 @@
               Accetta
           </a>
 
-          <a th:href="@{https://env-4086303.it1.eur.aruba.jenv-aruba.cloud/carrozzeriaonlineapi/refuseIncarico/{telefono}/{timestamp}(telefono=${telefonoDanneggiato}, timestamp=${#temporals.format(timestamp, 'yyyy-MM-dd''T''HH:mm:ss.SSSSSS')})}"
+          <a th:href="@{https://env-4086303.it1.eur.aruba.jenv-aruba.cloud/carrozzeriaonlineapi/refuseIncarico/{telefono}/{ragioneSocialeCarrozzeria}/{timestamp}(telefono=${telefonoDanneggiato}, ragioneSocialeCarrozzeria=${ragioneSocialeCarrozzeria}, timestamp=${#temporals.format(timestamp, 'yyyy-MM-dd''T''HH:mm:ss.SSSSSS')})}"
              class="btn btn-danger">
               Rifiuta
           </a>

@@ -95,14 +95,16 @@ public class TaskController {
         }
     }
 
-    @GetMapping("/refuseIncarico/{telefono}/{timestamp}")
+    @GetMapping("/refuseIncarico/{telefono}/{ragioneSocialeCarrozzeria}/{timestamp}")
     public RedirectView refuseIncarico(
             @PathVariable("telefono") String fromNumber,
+            @PathVariable("ragioneSocialeCarrozzeria") String companyName,
             @PathVariable("timestamp")
             @DateTimeFormat(pattern="yyyy-MM-dd'T'HH:mm:ss") LocalDateTime timestamp) {
         Task task = taskService.findTaskById(timestamp);
         if(task != null && task.getStatus() == TaskStatus.BOUNCING){
-            new BotContext(botStatesFactory.getStateFromTask(task), task).handleError(fromNumber, null);
+            MessageData messageData = new MessageData(companyName, 0, null, null);
+            new BotContext(botStatesFactory.getStateFromTask(task), task).handleError(fromNumber, messageData);
             return new RedirectView(Constants.REJECTED_TASK_PAGE);
         }else{
             return new RedirectView(Constants.TASK_ALREADY_ACCEPTED_PAGE);

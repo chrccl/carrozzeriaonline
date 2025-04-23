@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -89,29 +90,40 @@ public class BouncingState implements BotState {
         List<RepairCenter> bouncedRepairCenters = brcsPerTask.stream()
                 .map(brc -> brc.getBRCPerTaskId().getRepairCenter())
                 .collect(Collectors.toList());
-        Partner partner = bouncedRepairCenters.get(0).getPartner();
-        RepairCenter closestRepairCenter;
-        List<RepairCenter> repairCentersToAvoid;
-        if (partner == Partner.CARLINK){
-            repairCentersToAvoid = Stream
-                    .of(bouncedRepairCenters, repairCenterService.findRepairCentersByPartner(Partner.SAVOIA))
-                    .flatMap(List::stream).collect(Collectors.toList());
-        }else{
-            repairCentersToAvoid = Stream
-                    .of(bouncedRepairCenters, repairCenterService.findRepairCentersByPartner(Partner.CARLINK))
-                    .flatMap(List::stream).collect(Collectors.toList());
+
+        if(isLatestBouncedRCEqualsToTheRefuser(brcsPerTask, data.getMessageBody())) {
+            Partner partner = bouncedRepairCenters.get(0).getPartner();
+            RepairCenter closestRepairCenter;
+            List<RepairCenter> repairCentersToAvoid;
+            if (partner == Partner.CARLINK){
+                repairCentersToAvoid = Stream
+                        .of(bouncedRepairCenters, repairCenterService.findRepairCentersByPartner(Partner.SAVOIA))
+                        .flatMap(List::stream).collect(Collectors.toList());
+            }else{
+                repairCentersToAvoid = Stream
+                        .of(bouncedRepairCenters, repairCenterService.findRepairCentersByPartner(Partner.CARLINK))
+                        .flatMap(List::stream).collect(Collectors.toList());
+            }
+            closestRepairCenter = repairCenterService.findClosestRepairCentersByCap(
+                    data.getMessageBody(), repairCentersToAvoid
+            ).get(0);
+            brcTaskService.save(new BRCPerTask(new BRCPerTaskId(context.getTask(), closestRepairCenter), LocalDateTime.now(), false));
+
+            List<Attachment> attachments = attachmentService.findAttachmentsByTask(context.getTask());
+            sendTaskToChosenRepairCenter(context, attachments, closestRepairCenter);
+
+            context.getTask().setAccepted(false);
+            context.getTask().setStatus(TaskStatus.DELETED);
+            taskService.save(context.getTask());
         }
-        closestRepairCenter = repairCenterService.findClosestRepairCentersByCap(
-                data.getMessageBody(), repairCentersToAvoid
-        ).get(0);
-        brcTaskService.save(new BRCPerTask(new BRCPerTaskId(context.getTask(), closestRepairCenter), LocalDateTime.now(), false));
+    }
 
-        List<Attachment> attachments = attachmentService.findAttachmentsByTask(context.getTask());
-        sendTaskToChosenRepairCenter(context, attachments, closestRepairCenter);
-
-        context.getTask().setAccepted(false);
-        context.getTask().setStatus(TaskStatus.DELETED);
-        taskService.save(context.getTask());
+    private Boolean isLatestBouncedRCEqualsToTheRefuser(List<BRCPerTask> bcrTasks, String companyName) {
+        return bcrTasks.stream()
+                .max(Comparator.comparing(BRCPerTask::getAssignedAt))
+                .map(b -> b.getBRCPerTaskId().getRepairCenter())
+                .map(rc -> rc.getCompanyName().contains(companyName))
+                .orElse(false);
     }
 
     private void sendTaskToChosenRepairCenter(BotContext context, List<Attachment> attachments, RepairCenter rc) {
