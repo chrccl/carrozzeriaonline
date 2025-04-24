@@ -79,9 +79,9 @@ public class Constants {
 
 
 
-    public static final String CARLINK_TASKS_EMAIL = "chri0407@gmail.com";   //TODO
+    public static final String CARLINK_TASKS_EMAIL = "incarichi@car-link.it";
 
-    public static final String SAVOIA_TASKS_EMAIL = "chri0407@gmail.com";    //TODO
+    public static final String SAVOIA_TASKS_EMAIL = "incarichicarrozzeriaonline@gmail.com";
 
     public static final String TASK_EMAIL_SUBJECT = "Nuovo Incarico %s - Carrozzeria Online";
 
