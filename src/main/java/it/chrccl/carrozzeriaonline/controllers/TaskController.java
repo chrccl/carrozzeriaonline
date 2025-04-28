@@ -120,7 +120,7 @@ public class TaskController {
                 task.setStatus(TaskStatus.DELETED);
                 taskService.save(task);
                 twilioComponent.sendUserDeletedTaskNotification(
-                        new PhoneNumber(task.getUser().getMobilePhone()),
+                        new PhoneNumber(Constants.FALLBACK_NUMBER_FOR_OLD_TASK_ADVISE),
                         task.getUser()
                 );
                 return;
