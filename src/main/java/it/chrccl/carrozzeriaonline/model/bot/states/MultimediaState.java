@@ -42,7 +42,7 @@ public class MultimediaState implements BotState {
         PhoneNumber to = new PhoneNumber(fromNumber);
         if(context.getTask().getStatus() == TaskStatus.MULTIMEDIA
                 && (attachments.size() == Constants.MIN_ATTACHMENTS_PER_TASK
-                || attachments.stream().anyMatch(att -> att.getContentType().contains("pdf")))) {
+                    || attachments.stream().anyMatch(att -> att.getContentType().contains("pdf")))) {
             twilio.sendMessage(to, Constants.BOT_DATE_MESSAGE);
 
             context.getTask().setStatus(TaskStatus.DATE);

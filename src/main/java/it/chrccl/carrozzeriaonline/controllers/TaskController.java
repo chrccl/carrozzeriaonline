@@ -139,7 +139,8 @@ public class TaskController {
     }
 
     private void checkOutOfOrderMedia(Task task, Integer numMedia, String fromNumber, MessageData data) {
-        if(numMedia > 0 && task.getStatus() != TaskStatus.MULTIMEDIA){
+        //Check DateState to skip out of order msg for delayed attachments
+        if(numMedia > 0 && task.getStatus() != TaskStatus.MULTIMEDIA && task.getStatus() != TaskStatus.DATE){
             BotContext botContext = new BotContext(botStatesFactory.getMultimediaState(), task);
             botContext.handle(fromNumber, data);
         }

@@ -5,11 +5,14 @@ import it.chrccl.carrozzeriaonline.model.Constants;
 import it.chrccl.carrozzeriaonline.model.dao.RepairCenter;
 import it.chrccl.carrozzeriaonline.services.RepairCenterService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.reactive.result.view.RedirectView;
+
+import java.net.URI;
 
 @RestController
 @CrossOrigin(originPatterns = "*", allowedHeaders = "*")
@@ -26,9 +29,13 @@ public class ReportController {
     }
 
     @GetMapping("/addToReportNoleggioSquillace/{ragioneSocialeCarrozzeria}")
-    public RedirectView addToReportNoleggioSquillace(@PathVariable("ragioneSocialeCarrozzeria") String companyName) {
-        RepairCenter rc = repairCenterService.findRepairCentersByCompanyNameIsLikeIgnoreCase(companyName);
+    public ResponseEntity<Void> addToReportNoleggioSquillace(@PathVariable String ragioneSocialeCarrozzeria) {
+        RepairCenter rc = repairCenterService
+                .findRepairCentersByCompanyNameIsLikeIgnoreCase(ragioneSocialeCarrozzeria);
         ioComponent.addToReportNoleggioSquillace(rc);
-        return new RedirectView(Constants.SQUILLACE_INSTAGRAM_PAGE);
+        URI instagram = URI.create(Constants.SQUILLACE_INSTAGRAM_PAGE);
+        return ResponseEntity.status(HttpStatus.FOUND)
+                .location(instagram)
+                .build();
     }
 }
