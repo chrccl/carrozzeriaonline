@@ -88,7 +88,6 @@ public class CarRepairCenterState implements BotState {
 
         context.getTask().setStatus(TaskStatus.BOUNCING);
         taskService.save(context.getTask());
-        ioComponent.removeTmpLogs(extractPhoneNumber(fromNumber));
     }
 
     @Override

@@ -17,8 +17,8 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.file.*;
-import java.nio.file.attribute.BasicFileAttributes;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.time.format.DateTimeFormatter;
 
 @Slf4j
@@ -93,30 +93,6 @@ public class IOComponent {
             log.debug("Text added and PDF saved at: {}", outputPdfPath);
         }catch (IOException e) {
             log.error("Error while processing PDF: {}", String.valueOf(e.getCause()));
-        }
-    }
-
-    public void removeTmpLogs(String fromNumber) {
-        Path dir = Paths.get(String.format(Constants.USER_WARRANT_DIRECTORY_PATH_FORMAT, fromNumber));
-
-        try {
-            Files.walkFileTree(dir, new SimpleFileVisitor<>() {
-                @Override
-                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-                    Files.delete(file);
-                    return FileVisitResult.CONTINUE;
-                }
-
-                @Override
-                public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
-                    Files.delete(dir);
-                    return FileVisitResult.CONTINUE;
-                }
-            });
-
-            log.info("Directory and all contents deleted");
-        } catch (IOException e) {
-            log.error("Failed to delete directory: {}", e.getMessage());
         }
     }
 
