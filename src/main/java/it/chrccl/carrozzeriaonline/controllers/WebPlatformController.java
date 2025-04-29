@@ -4,6 +4,7 @@ import com.twilio.type.PhoneNumber;
 import it.chrccl.carrozzeriaonline.components.BulkGateComponent;
 import it.chrccl.carrozzeriaonline.components.TwilioComponent;
 import it.chrccl.carrozzeriaonline.model.Constants;
+import it.chrccl.carrozzeriaonline.model.WebAttachment;
 import it.chrccl.carrozzeriaonline.model.WebTask;
 import it.chrccl.carrozzeriaonline.model.dao.*;
 import it.chrccl.carrozzeriaonline.services.*;
@@ -13,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -50,7 +52,8 @@ public class WebPlatformController {
     @PostMapping("/handleWebPlatformIncomingTask")
     public ResponseEntity<String> handleWebPlatformIncomingTask(@RequestBody WebTask webTask){
         Task task = webTask.getTask();
-        List<Attachment> attachments = webTask.getAttachments();
+        List<WebAttachment> webAttachments = webTask.getAttachments();
+
         String userPhone = Constants.TWILIO_PREFIX + task.getUser().getMobilePhone();
         Optional<Task> optionalTask = taskService.findOngoingTaskByPhoneNumber(userPhone);
         if(optionalTask.isPresent()) return ResponseEntity.internalServerError()
@@ -64,8 +67,17 @@ public class WebPlatformController {
         usedOTP.setConfirmed(true);
         otpCheckService.saveOtpCheck(usedOTP);
 
-        attachments.forEach(attachment -> attachment.setTask(updatedTask));
+        List<Attachment> attachments = new ArrayList<>();
+        webAttachments.forEach(attachment -> {
+            attachments.add(
+                    attachmentService.createFromBase64Attachment(
+                            task, attachment.getBase64Data(), attachment.getName(),
+                            attachment.getUrl(), attachment.getContentType()
+                    )
+            );
+        });
         attachmentService.saveAll(attachments);
+
         RepairCenter rc = repairCenterService.findRepairCentersByCompanyNameIsLikeIgnoreCase(webTask.getCompanyName());
         if (rc != null) {
             brcPerTaskService.save(new BRCPerTask(new BRCPerTaskId(task, rc), task.getCreatedAt(), false));

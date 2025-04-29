@@ -50,20 +50,15 @@ public class OTPState implements BotState {
         context.getTask().setStatus(TaskStatus.CAP);
         taskService.save(context.getTask());
 
-        ioComponent.writeOnWarrantFile(
-                context, Partner.CARLINK, extractPhoneNumber(fromNumber), Constants.SIGNED_DIGITALLY_STATUS, 380, 105
-        );
+        ioComponent.writeOnWarrantFile(context, Partner.CARLINK, Constants.SIGNED_DIGITALLY_STATUS, 380, 105);
 
-        ioComponent.writeOnWarrantFile(context, Partner.CARLINK, extractPhoneNumber(fromNumber),
+        ioComponent.writeOnWarrantFile(context, Partner.CARLINK,
                 LocalDate.now().format(DateTimeFormatter.ofPattern(Constants.DATE_FORMAT)), 110, 105);
 
-        ioComponent.writeOnWarrantFile(
-                context, Partner.SAVOIA, extractPhoneNumber(fromNumber), Constants.SIGNED_DIGITALLY_STATUS, 400, 210
-        );
+        ioComponent.writeOnWarrantFile(context, Partner.SAVOIA, Constants.SIGNED_DIGITALLY_STATUS, 400, 210);
 
-        ioComponent.writeOnWarrantFile(context, Partner.SAVOIA, extractPhoneNumber(fromNumber),
+        ioComponent.writeOnWarrantFile(context, Partner.SAVOIA,
                 LocalDate.now().format(DateTimeFormatter.ofPattern(Constants.DATE_FORMAT)), 108, 205);
-
 
         PhoneNumber to = new PhoneNumber(fromNumber);
         twilio.sendMessage(to, Constants.BOT_CAP_MESSAGE);

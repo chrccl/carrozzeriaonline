@@ -19,19 +19,28 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.time.format.DateTimeFormatter;
 
 @Slf4j
 @Component
 public class IOComponent {
 
-    public void writeOnWarrantFile(BotContext context, Partner partner, String userPhone, String text, int x, int y){
+    public void writeOnWarrantFile(BotContext context, Partner partner, String text, int x, int y){
         String templatePdfPath = partner == Partner.CARLINK
                 ? Constants.CARLINK_WARRANT_PATH
                 : Constants.SAVOIA_WARRANT_PATH;
 
         String outputPdfPath = partner == Partner.CARLINK
-                ? String.format(Constants.USER_CARLINK_WARRANT_PATH_FORMAT, userPhone)
-                : String.format(Constants.USER_SAVOIA_WARRANT_PATH_FORMAT, userPhone);
+                ? String.format(
+                    Constants.USER_CARLINK_WARRANT_PATH_FORMAT,
+                    context.getTask().getUser().getMobilePhone() + "_" +
+                            context.getTask().getCreatedAt().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+                )
+                : String.format(
+                    Constants.USER_SAVOIA_WARRANT_PATH_FORMAT,
+                    context.getTask().getUser().getMobilePhone() + "_" +
+                        context.getTask().getCreatedAt().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+                );
 
         if (context.getTask().getStatus() == TaskStatus.FULL_NAME) {
             copyAndRenameFile(templatePdfPath, outputPdfPath);
@@ -49,11 +58,19 @@ public class IOComponent {
         }
     }
 
-    public void signWarrantFile(Partner partner, String userPhone, String text, int x, int y) {
+    public void signWarrantFile(BotContext context, Partner partner, String text, int x, int y) {
         try {
             String outputPdfPath = partner == Partner.CARLINK
-                    ? String.format(Constants.USER_CARLINK_WARRANT_PATH_FORMAT, userPhone)
-                    : String.format(Constants.USER_SAVOIA_WARRANT_PATH_FORMAT, userPhone);
+                ? String.format(
+                    Constants.USER_CARLINK_WARRANT_PATH_FORMAT,
+                    context.getTask().getUser().getMobilePhone() + "_" +
+                            context.getTask().getCreatedAt().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+                )
+                : String.format(
+                    Constants.USER_SAVOIA_WARRANT_PATH_FORMAT,
+                    context.getTask().getUser().getMobilePhone() + "_" +
+                            context.getTask().getCreatedAt().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+                );
 
             PDDocument document = PDDocument.load(new File(outputPdfPath));
             PDPage page = document.getPage(0);

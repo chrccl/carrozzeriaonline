@@ -21,9 +21,7 @@ public class Attachment {
 
     private String contentType;
 
-    @Lob
-    @Column(columnDefinition = "LONGTEXT")
-    private String base64Data;
+    private String filePath;
 
     private String url;
 

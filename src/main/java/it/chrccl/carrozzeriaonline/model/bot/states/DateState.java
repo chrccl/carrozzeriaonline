@@ -44,12 +44,8 @@ public class DateState implements BotState {
         context.getTask().setStatus(TaskStatus.FULL_NAME);
         taskService.save(context.getTask());
 
-        ioComponent.writeOnWarrantFile(
-                context, Partner.CARLINK, extractPhoneNumber(fromNumber), data.getMessageBody(), 425, 475
-        );
-        ioComponent.writeOnWarrantFile(
-                context, Partner.SAVOIA, extractPhoneNumber(fromNumber), data.getMessageBody(), 115, 585
-        );
+        ioComponent.writeOnWarrantFile(context, Partner.CARLINK, data.getMessageBody(), 425, 475);
+        ioComponent.writeOnWarrantFile(context, Partner.SAVOIA, data.getMessageBody(), 115, 585);
 
         PhoneNumber to = new PhoneNumber(fromNumber);
         twilio.sendMessage(to, Constants.BOT_FULLNAME_MESSAGE);

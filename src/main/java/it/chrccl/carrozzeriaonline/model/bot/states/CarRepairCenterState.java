@@ -21,11 +21,9 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.net.URI;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.LocalDateTime;
-import java.util.Base64;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -154,7 +152,9 @@ public class CarRepairCenterState implements BotState {
             );
             Path warrantPath = Path.of(String.format(
                     Constants.USER_SAVOIA_WARRANT_PATH_FORMAT,
-                    extractPhoneNumber(fromNumber))
+                    context.getTask().getUser().getMobilePhone() + "_" +
+                            context.getTask().getCreatedAt().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+                    )
             );
             String url = imgBBComponent.uploadImage(
                     warrantPath.getParent().toString(), warrantPath.getFileName().toString()
@@ -190,7 +190,9 @@ public class CarRepairCenterState implements BotState {
         );
         Path warrantPath = Path.of(
                 String.format(Constants.USER_CARLINK_WARRANT_PATH_FORMAT,
-                        extractPhoneNumber(fromNumber))
+                        context.getTask().getUser().getMobilePhone() + "_" +
+                                context.getTask().getCreatedAt().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+                )
         );
         try {
             String url = imgBBComponent.uploadImage(
@@ -215,8 +217,7 @@ public class CarRepairCenterState implements BotState {
         Attachment warrantAttachment = Attachment.builder()
                 .name(warrantPath.getFileName().toString())
                 .contentType(Constants.WARRANT_CONTENT_TYPE)
-                .base64Data(Base64.getEncoder()
-                        .encodeToString(Files.readAllBytes(Paths.get(warrantPath.toString()))))
+                .filePath(warrantPath.toString())
                 .url(url)
                 .task(context.getTask())
                 .build();

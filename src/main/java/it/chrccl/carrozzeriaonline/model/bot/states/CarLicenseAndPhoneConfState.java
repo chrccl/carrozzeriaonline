@@ -51,9 +51,9 @@ public class CarLicenseAndPhoneConfState implements BotState {
         context.getTask().setStatus(TaskStatus.OTP);
         taskService.save(context.getTask());
 
-        ioComponent.writeOnWarrantFile(context, Partner.CARLINK, purePhoneNumber, purePhoneNumber, 190, 592);
-        ioComponent.writeOnWarrantFile(context, Partner.CARLINK, purePhoneNumber, data.getMessageBody(), 135, 475);
-        ioComponent.writeOnWarrantFile(context, Partner.SAVOIA, purePhoneNumber, data.getMessageBody(), 300, 628);
+        ioComponent.writeOnWarrantFile(context, Partner.CARLINK, purePhoneNumber, 190, 592);
+        ioComponent.writeOnWarrantFile(context, Partner.CARLINK, data.getMessageBody(), 135, 475);
+        ioComponent.writeOnWarrantFile(context, Partner.SAVOIA, data.getMessageBody(), 300, 628);
 
         String otpId = bulkGateComponent.sendOtp(purePhoneNumber);
         otpCheckService.saveOtpCheck(new OtpCheck(LocalDateTime.now(), otpId, context.getTask(), false));

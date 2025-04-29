@@ -113,7 +113,7 @@ public class BouncingState implements BotState {
             sendTaskToChosenRepairCenter(context, attachments, closestRepairCenter);
 
             context.getTask().setAccepted(false);
-            context.getTask().setStatus(TaskStatus.DELETED);
+            context.getTask().setStatus(TaskStatus.BOUNCING);
             taskService.save(context.getTask());
         }
     }

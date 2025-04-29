@@ -11,17 +11,13 @@ import it.chrccl.carrozzeriaonline.model.dao.Task;
 import it.chrccl.carrozzeriaonline.model.dao.TaskStatus;
 import it.chrccl.carrozzeriaonline.services.AttachmentService;
 import it.chrccl.carrozzeriaonline.services.TaskService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.net.URLConnection;
-import java.util.Base64;
 import java.util.List;
-import java.util.UUID;
 
+@Slf4j
 @Component
 public class MultimediaState implements BotState {
 
@@ -40,8 +36,8 @@ public class MultimediaState implements BotState {
 
     @Override
     public void handleMessage(BotContext context, String fromNumber, MessageData data) {
-        Attachment attachment = getAttachment(context, data);
-        if (attachment != null) attachmentService.save(attachment);
+        saveAttachment(context, data);
+
         List<Attachment> attachments = attachmentService.findAttachmentsByTask(context.getTask());
         PhoneNumber to = new PhoneNumber(fromNumber);
         if(context.getTask().getStatus() == TaskStatus.MULTIMEDIA
@@ -67,27 +63,12 @@ public class MultimediaState implements BotState {
         handleMessage(context, fromNumber, data);
     }
 
-    private Attachment getAttachment(BotContext context, MessageData data) {
-        try {
-            URL url = new URL(data.getMediaUrlAttachment());
-            URLConnection connection = url.openConnection();
-            String userCredentials = twilio.getUserCredentials();
-            connection.setRequestProperty("Authorization",
-                    "Basic " + Base64.getEncoder().encodeToString(userCredentials.getBytes()));
-
-            InputStream inputStream = connection.getInputStream();
-            byte[] imageBytes = inputStream.readAllBytes();
-            String imageBase64 = Base64.getEncoder().encodeToString(imageBytes);
-
-            return Attachment.builder()
-                    .name("attachment_" + UUID.randomUUID())
-                    .contentType(data.getContentTypeAttachment())
-                    .base64Data(imageBase64)
-                    .url(data.getMediaUrlAttachment())
-                    .task(context.getTask())
-                    .build();
-        } catch (IOException e) {
-            return null;
+    private void saveAttachment(BotContext context, MessageData data) {
+        Attachment attachment = attachmentService.createFromUrl(context, data);
+        if(attachment != null){
+            log.info("Attachment saved: {}", attachment.getId());
+        }else {
+            log.error("Attachment not saved");
         }
     }
 

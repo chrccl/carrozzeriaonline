@@ -6,6 +6,7 @@ import it.chrccl.carrozzeriaonline.model.dao.Attachment;
 import it.chrccl.carrozzeriaonline.model.dao.Partner;
 import it.chrccl.carrozzeriaonline.model.dao.RepairCenter;
 import it.chrccl.carrozzeriaonline.model.dao.Task;
+import it.chrccl.carrozzeriaonline.services.AttachmentService;
 import jakarta.activation.DataHandler;
 import jakarta.mail.Message;
 import jakarta.mail.internet.InternetAddress;
@@ -21,7 +22,6 @@ import org.springframework.stereotype.Component;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
-import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,10 +35,13 @@ public class EmailComponent {
 
     private final TemplateEngine templateEngine;
 
+    private final AttachmentService attachmentService;
+
     @Autowired
-    public EmailComponent(JavaMailSender mailSender, TemplateEngine templateEngine) {
+    public EmailComponent(JavaMailSender mailSender, TemplateEngine templateEngine, AttachmentService attachmentService) {
         this.mailSender = mailSender;
         this.templateEngine = templateEngine;
+        this.attachmentService = attachmentService;
     }
 
     public void sendTaskNotification(String to, String subject, Map<String, Object> variables,
@@ -62,7 +65,7 @@ public class EmailComponent {
                 log.info("Adding {} attachments to the email", fileToAttach.size());
                 for (Attachment attachment : fileToAttach) {
                     log.debug("Attaching file: {} (type: {})", attachment.getName(), attachment.getContentType());
-                    byte[] attachmentBytes = Base64.getDecoder().decode(attachment.getBase64Data());
+                    byte[] attachmentBytes = attachmentService.getFileBytes(attachment.getFilePath());
                     MimeBodyPart attachmentPart = new MimeBodyPart();
                     attachmentPart.setDataHandler(new DataHandler(
                             new ByteArrayDataSource(attachmentBytes, attachment.getContentType())));
