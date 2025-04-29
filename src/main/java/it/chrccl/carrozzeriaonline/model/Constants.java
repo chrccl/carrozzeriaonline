@@ -1,11 +1,6 @@
 package it.chrccl.carrozzeriaonline.model;
 
-import org.springframework.beans.factory.annotation.Value;
-
 public class Constants {
-
-    @Value("${attachments.base-dir}")
-    public static String baseDir;
 
     public static final String BOT_START_MESSAGE =
             """
@@ -108,11 +103,11 @@ public class Constants {
 
     public static final String SAVOIA_WARRANT_PATH = "/opt/tomcat/warrantsTemplates/mandatoSavoia.pdf";
 
-    public static final String USER_WARRANT_DIRECTORY_PATH_FORMAT = baseDir + "/%s";
+    public static final String USER_WARRANT_DIRECTORY_PATH_FORMAT = "/var/lib/carrozzeria_online/attachments/%s";
 
-    public static final String USER_CARLINK_WARRANT_PATH_FORMAT = baseDir + "/%s/CarLink.pdf";
+    public static final String USER_CARLINK_WARRANT_PATH_FORMAT = "/var/lib/carrozzeria_online/attachments/%s/CarLink.pdf";
 
-    public static final String USER_SAVOIA_WARRANT_PATH_FORMAT = baseDir + "/%s/Savoia.pdf";
+    public static final String USER_SAVOIA_WARRANT_PATH_FORMAT = "/var/lib/carrozzeria_online/attachments/%s/Savoia.pdf";
 
     public static final String FONT_PATH = "/opt/tomcat/fonts/Birthstone-Regular.ttf";
 

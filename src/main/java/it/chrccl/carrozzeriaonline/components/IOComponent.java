@@ -42,6 +42,8 @@ public class IOComponent {
                         context.getTask().getCreatedAt().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
                 );
 
+        log.debug("Writing text on PDF: {} at position ({}, {})", outputPdfPath, x, y);
+
         if (context.getTask().getStatus() == TaskStatus.FULL_NAME) {
             copyAndRenameFile(templatePdfPath, outputPdfPath);
         }
