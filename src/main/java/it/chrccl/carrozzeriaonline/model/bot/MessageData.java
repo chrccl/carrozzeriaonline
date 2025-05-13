@@ -15,4 +15,6 @@ public class MessageData {
 
     private String mediaUrlAttachment;
 
+    private boolean isExpired;
+
 }

@@ -59,7 +59,7 @@ public class TaskController {
             userService.save(new User(fromNumber));
             twilioComponent.sendLandingMessage(new PhoneNumber(fromNumber));
         }else{
-            MessageData messageData = new MessageData(messageBody, numMedia, contentTypeAttachment, mediaUrlAttachment);
+            MessageData messageData = new MessageData(messageBody, numMedia, contentTypeAttachment, mediaUrlAttachment, false);
             Optional<Task> optionalTask = taskService.findOngoingTaskByPhoneNumber(fromNumber);
             BotContext botContext; BotState currentBotState; Task task; Boolean errorOccurred;
             if (optionalTask.isPresent()) {
@@ -95,7 +95,7 @@ public class TaskController {
             @DateTimeFormat(pattern="yyyy-MM-dd'T'HH:mm:ss") LocalDateTime timestamp) {
         Task task = taskService.findTaskById(timestamp);
         if(task != null && task.getStatus() == TaskStatus.BOUNCING){
-            MessageData messageData = new MessageData(companyName, 0, null, null);
+            MessageData messageData = new MessageData(companyName, 0, null, null, false);
             new BotContext(botStatesFactory.getStateFromTask(task), task).handle(fromNumber, messageData);
             return new RedirectView(Constants.ACCEPTED_TASK_PAGE);
         }else{
@@ -111,7 +111,7 @@ public class TaskController {
             @DateTimeFormat(pattern="yyyy-MM-dd'T'HH:mm:ss") LocalDateTime timestamp) {
         Task task = taskService.findTaskById(timestamp);
         if(task != null && task.getStatus() == TaskStatus.BOUNCING){
-            MessageData messageData = new MessageData(companyName, 0, null, null);
+            MessageData messageData = new MessageData(companyName, 0, null, null, false);
             new BotContext(botStatesFactory.getStateFromTask(task), task).handleError(fromNumber, messageData);
             return new RedirectView(Constants.REJECTED_TASK_PAGE);
         }else{

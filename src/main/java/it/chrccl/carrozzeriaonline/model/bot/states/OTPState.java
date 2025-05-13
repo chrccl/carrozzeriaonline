@@ -77,7 +77,7 @@ public class OTPState implements BotState {
                 return isWrong;
             }else{
                 taskService.delete(task);
-                data.setMessageBody(Constants.EXPIRED);
+                data.setExpired(true);
                 return true;
             }
         }else{
@@ -88,7 +88,7 @@ public class OTPState implements BotState {
     @Override
     public void handleError(BotContext context, String fromNumber, MessageData data) {
         PhoneNumber to = new PhoneNumber(fromNumber);
-        if(data.getMessageBody().equals(Constants.EXPIRED)) {
+        if(data.isExpired()) {
             twilio.sendMessage(to, Constants.BOT_FALLBACK_EXPIRED_OTP_MESSAGE);
         }else{
             OtpCheck otp = otpCheckService.findMostRecentOtpCheckByTask(context.getTask());
