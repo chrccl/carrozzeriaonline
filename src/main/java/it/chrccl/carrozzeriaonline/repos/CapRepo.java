@@ -1,6 +1,6 @@
 package it.chrccl.carrozzeriaonline.repos;
 
-import it.chrccl.carrozzeriaonline.model.dao.CAP;
+import it.chrccl.carrozzeriaonline.model.entities.CAP;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

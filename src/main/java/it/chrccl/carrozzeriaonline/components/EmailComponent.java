@@ -2,10 +2,10 @@ package it.chrccl.carrozzeriaonline.components;
 
 import it.chrccl.carrozzeriaonline.model.Constants;
 import it.chrccl.carrozzeriaonline.model.ThymeleafVariables;
-import it.chrccl.carrozzeriaonline.model.dao.Attachment;
-import it.chrccl.carrozzeriaonline.model.dao.Partner;
-import it.chrccl.carrozzeriaonline.model.dao.RepairCenter;
-import it.chrccl.carrozzeriaonline.model.dao.Task;
+import it.chrccl.carrozzeriaonline.model.entities.Attachment;
+import it.chrccl.carrozzeriaonline.model.entities.Partner;
+import it.chrccl.carrozzeriaonline.model.entities.RepairCenter;
+import it.chrccl.carrozzeriaonline.model.entities.Task;
 import it.chrccl.carrozzeriaonline.services.AttachmentService;
 import jakarta.activation.DataHandler;
 import jakarta.mail.Message;
@@ -26,7 +26,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
 @Slf4j
 @Component
 public class EmailComponent {
@@ -45,7 +44,7 @@ public class EmailComponent {
     }
 
     public void sendTaskNotification(String to, String subject, Map<String, Object> variables,
-                                      List<Attachment> fileToAttach, String template) {
+                                      List<Attachment> filesToAttach, String template) {
         log.info("Preparing email to: {} with subject: {}", to, subject);
         MimeMessagePreparator preparator = mimeMessage -> {
             mimeMessage.setRecipient(Message.RecipientType.TO, new InternetAddress(to));
@@ -60,10 +59,9 @@ public class EmailComponent {
             MimeBodyPart htmlPart = new MimeBodyPart();
             htmlPart.setContent(htmlContent, "text/html; charset=utf-8");
             multipart.addBodyPart(htmlPart);
-
-            if (fileToAttach != null && !fileToAttach.isEmpty()) {
-                log.info("Adding {} attachments to the email", fileToAttach.size());
-                for (Attachment attachment : fileToAttach) {
+            if (filesToAttach != null && !filesToAttach.isEmpty()) {
+                log.info("Adding {} attachments to the email", filesToAttach.size());
+                for (Attachment attachment : filesToAttach) {
                     log.debug("Attaching file: {} (type: {})", attachment.getName(), attachment.getContentType());
                     byte[] attachmentBytes = attachmentService.getFileBytes(attachment.getFilePath());
                     MimeBodyPart attachmentPart = new MimeBodyPart();

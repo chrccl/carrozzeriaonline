@@ -2,9 +2,9 @@ package it.chrccl.carrozzeriaonline.components;
 
 import it.chrccl.carrozzeriaonline.model.Constants;
 import it.chrccl.carrozzeriaonline.model.bot.BotContext;
-import it.chrccl.carrozzeriaonline.model.dao.Partner;
-import it.chrccl.carrozzeriaonline.model.dao.RepairCenter;
-import it.chrccl.carrozzeriaonline.model.dao.TaskStatus;
+import it.chrccl.carrozzeriaonline.model.entities.Partner;
+import it.chrccl.carrozzeriaonline.model.entities.RepairCenter;
+import it.chrccl.carrozzeriaonline.model.entities.TaskStatus;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;

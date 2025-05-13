@@ -1,7 +1,7 @@
 package it.chrccl.carrozzeriaonline.services;
 
-import it.chrccl.carrozzeriaonline.model.dao.BRCPerTask;
-import it.chrccl.carrozzeriaonline.model.dao.Task;
+import it.chrccl.carrozzeriaonline.model.entities.BRCPerTask;
+import it.chrccl.carrozzeriaonline.model.entities.Task;
 import it.chrccl.carrozzeriaonline.repos.BRCPerTaskRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

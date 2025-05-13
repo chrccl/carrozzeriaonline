@@ -1,8 +1,8 @@
 package it.chrccl.carrozzeriaonline.services;
 
-import it.chrccl.carrozzeriaonline.model.dao.CAP;
-import it.chrccl.carrozzeriaonline.model.dao.Partner;
-import it.chrccl.carrozzeriaonline.model.dao.RepairCenter;
+import it.chrccl.carrozzeriaonline.model.entities.CAP;
+import it.chrccl.carrozzeriaonline.model.entities.Partner;
+import it.chrccl.carrozzeriaonline.model.entities.RepairCenter;
 import it.chrccl.carrozzeriaonline.repos.RepairCenterRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

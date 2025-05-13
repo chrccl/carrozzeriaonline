@@ -3,8 +3,8 @@ package it.chrccl.carrozzeriaonline.components;
 import com.twilio.Twilio;
 import com.twilio.rest.api.v2010.account.Message;
 import com.twilio.type.PhoneNumber;
-import it.chrccl.carrozzeriaonline.model.dao.RepairCenter;
-import it.chrccl.carrozzeriaonline.model.dao.User;
+import it.chrccl.carrozzeriaonline.model.entities.RepairCenter;
+import it.chrccl.carrozzeriaonline.model.entities.User;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONObject;
@@ -26,6 +26,9 @@ public class TwilioComponent {
 
     @Value("${twilio.messaging.sid}")
     private String MESSAGING_SID;
+
+    @Value("${twilio.landingmsg.sid}")
+    private String LANDING_MSG_SID;
 
     @Value("${twilio.repair.center.template.sid}")
     private String REPAIR_CENTER_TEMPLATE_SID;
@@ -62,6 +65,10 @@ public class TwilioComponent {
 
     public void sendWebMessage(PhoneNumber to) {
         Message.creator(to, MESSAGING_SID, "").setContentSid(WEB_MSG_SID).create();
+    }
+
+    public void sendLandingMessage(PhoneNumber to) {
+        Message.creator(to, MESSAGING_SID, "").setContentSid(LANDING_MSG_SID).create();
     }
 
     public void sendRepairCentersProposalMessage(PhoneNumber to, List<RepairCenter> repairCenters) {

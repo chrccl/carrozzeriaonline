@@ -1,4 +1,4 @@
-package it.chrccl.carrozzeriaonline.model.dao;
+package it.chrccl.carrozzeriaonline.model.entities;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;

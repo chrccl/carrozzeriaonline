@@ -1,7 +1,7 @@
 package it.chrccl.carrozzeriaonline.repos;
 
-import it.chrccl.carrozzeriaonline.model.dao.Partner;
-import it.chrccl.carrozzeriaonline.model.dao.RepairCenter;
+import it.chrccl.carrozzeriaonline.model.entities.Partner;
+import it.chrccl.carrozzeriaonline.model.entities.RepairCenter;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

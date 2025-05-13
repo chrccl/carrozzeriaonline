@@ -1,7 +1,7 @@
 package it.chrccl.carrozzeriaonline.services;
 
-import it.chrccl.carrozzeriaonline.model.dao.OtpCheck;
-import it.chrccl.carrozzeriaonline.model.dao.Task;
+import it.chrccl.carrozzeriaonline.model.entities.OtpCheck;
+import it.chrccl.carrozzeriaonline.model.entities.Task;
 import it.chrccl.carrozzeriaonline.repos.OtpCheckRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

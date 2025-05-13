@@ -1,6 +1,6 @@
 package it.chrccl.carrozzeriaonline.model.bot;
 
-import it.chrccl.carrozzeriaonline.model.dao.Task;
+import it.chrccl.carrozzeriaonline.model.entities.Task;
 
 public interface BotState {
 

@@ -6,7 +6,7 @@ import it.chrccl.carrozzeriaonline.components.TwilioComponent;
 import it.chrccl.carrozzeriaonline.model.Constants;
 import it.chrccl.carrozzeriaonline.model.WebAttachment;
 import it.chrccl.carrozzeriaonline.model.WebTask;
-import it.chrccl.carrozzeriaonline.model.dao.*;
+import it.chrccl.carrozzeriaonline.model.entities.*;
 import it.chrccl.carrozzeriaonline.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

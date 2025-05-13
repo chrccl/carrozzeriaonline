@@ -7,12 +7,13 @@ import it.chrccl.carrozzeriaonline.model.bot.BotContext;
 import it.chrccl.carrozzeriaonline.model.bot.BotState;
 import it.chrccl.carrozzeriaonline.model.bot.BotStatesFactory;
 import it.chrccl.carrozzeriaonline.model.bot.MessageData;
-import it.chrccl.carrozzeriaonline.model.dao.BRCPerTask;
-import it.chrccl.carrozzeriaonline.model.dao.Task;
-import it.chrccl.carrozzeriaonline.model.dao.TaskStatus;
-import it.chrccl.carrozzeriaonline.model.dao.User;
+import it.chrccl.carrozzeriaonline.model.entities.BRCPerTask;
+import it.chrccl.carrozzeriaonline.model.entities.Task;
+import it.chrccl.carrozzeriaonline.model.entities.TaskStatus;
+import it.chrccl.carrozzeriaonline.model.entities.User;
 import it.chrccl.carrozzeriaonline.services.BRCPerTaskService;
 import it.chrccl.carrozzeriaonline.services.TaskService;
+import it.chrccl.carrozzeriaonline.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
@@ -29,6 +30,8 @@ import java.util.Optional;
 @CrossOrigin(originPatterns = "*", allowedHeaders = "*")
 public class TaskController {
 
+    private final UserService userService;
+
     private final TaskService taskService;
 
     private final BRCPerTaskService brcPerTaskService;
@@ -38,8 +41,9 @@ public class TaskController {
     private final TwilioComponent twilioComponent;
 
     @Autowired
-    public TaskController(TaskService taskService, BRCPerTaskService brcPerTaskService,
+    public TaskController(TaskService taskService, BRCPerTaskService brcPerTaskService, UserService userService,
                           BotStatesFactory botStatesFactory, TwilioComponent twilioComponent) {
+        this.userService = userService;
         this.taskService = taskService;
         this.brcPerTaskService = brcPerTaskService;
         this.botStatesFactory = botStatesFactory;
@@ -51,30 +55,34 @@ public class TaskController {
             @RequestParam("Body") String messageBody, @RequestParam("NumMedia") Integer numMedia,
             @RequestParam(name = "MediaContentType0", required = false) String contentTypeAttachment,
             @RequestParam(name = "MediaUrl0", required = false) String mediaUrlAttachment) {
-        MessageData messageData = new MessageData(messageBody, numMedia, contentTypeAttachment, mediaUrlAttachment);
-        Optional<Task> optionalTask = taskService.findOngoingTaskByPhoneNumber(fromNumber);
-        BotContext botContext; BotState currentBotState; Task task; Boolean errorOccurred;
-        if (optionalTask.isPresent()) {
-            task = optionalTask.get();
-
-            checkOutOfOrderMedia(task, numMedia, fromNumber, messageData);
-            if (task.getIsWeb()) return handleWebTask(task, messageData, fromNumber);
-
-            currentBotState = botStatesFactory.getStateFromTask(task);
-            errorOccurred = currentBotState.verifyMessage(task, messageData);
-        } else {
-            task = Task.builder()
-                    .createdAt(LocalDateTime.now()).user(new User(fromNumber))
-                    .status(TaskStatus.INITIAL_STATE).isWeb(false).accepted(false)
-                    .build();
-            errorOccurred = false;
-            currentBotState = botStatesFactory.getInitialState();
-        }
-        botContext = new BotContext(currentBotState, task);
-        if (errorOccurred) {
-            botContext.handleError(fromNumber, messageData);
+        if(userService.findUserByMobilePhone(fromNumber) == null) {
+            userService.save(new User(fromNumber));
+            twilioComponent.sendLandingMessage(new PhoneNumber(fromNumber));
         }else{
-            botContext.handle(fromNumber, messageData);
+            MessageData messageData = new MessageData(messageBody, numMedia, contentTypeAttachment, mediaUrlAttachment);
+            Optional<Task> optionalTask = taskService.findOngoingTaskByPhoneNumber(fromNumber);
+            BotContext botContext; BotState currentBotState; Task task; Boolean errorOccurred;
+            if (optionalTask.isPresent()) {
+                task = optionalTask.get();
+                checkOutOfOrderMedia(task, numMedia, fromNumber, messageData);
+                if (task.getIsWeb()) return handleWebTask(task, messageData, fromNumber);
+
+                currentBotState = botStatesFactory.getStateFromTask(task);
+                errorOccurred = currentBotState.verifyMessage(task, messageData);
+            } else {
+                task = Task.builder()
+                        .createdAt(LocalDateTime.now()).user(new User(fromNumber))
+                        .status(TaskStatus.INITIAL_STATE).isWeb(false).accepted(false)
+                        .build();
+                errorOccurred = false;
+                currentBotState = botStatesFactory.getInitialState();
+            }
+            botContext = new BotContext(currentBotState, task);
+            if (errorOccurred) {
+                botContext.handleError(fromNumber, messageData);
+            }else{
+                botContext.handle(fromNumber, messageData);
+            }
         }
         return ResponseEntity.ok().build();
     }

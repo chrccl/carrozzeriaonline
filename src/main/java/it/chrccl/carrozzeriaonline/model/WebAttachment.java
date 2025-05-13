@@ -1,6 +1,6 @@
 package it.chrccl.carrozzeriaonline.model;
 
-import it.chrccl.carrozzeriaonline.model.dao.Task;
+import it.chrccl.carrozzeriaonline.model.entities.Task;
 import lombok.Data;
 
 @Data

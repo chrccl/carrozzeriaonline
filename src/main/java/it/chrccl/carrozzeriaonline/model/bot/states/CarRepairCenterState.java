@@ -10,7 +10,7 @@ import it.chrccl.carrozzeriaonline.model.ThymeleafVariables;
 import it.chrccl.carrozzeriaonline.model.bot.BotContext;
 import it.chrccl.carrozzeriaonline.model.bot.BotState;
 import it.chrccl.carrozzeriaonline.model.bot.MessageData;
-import it.chrccl.carrozzeriaonline.model.dao.*;
+import it.chrccl.carrozzeriaonline.model.entities.*;
 import it.chrccl.carrozzeriaonline.services.AttachmentService;
 import it.chrccl.carrozzeriaonline.services.BRCPerTaskService;
 import it.chrccl.carrozzeriaonline.services.RepairCenterService;

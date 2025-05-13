@@ -8,10 +8,10 @@ import it.chrccl.carrozzeriaonline.model.Constants;
 import it.chrccl.carrozzeriaonline.model.bot.BotContext;
 import it.chrccl.carrozzeriaonline.model.bot.BotState;
 import it.chrccl.carrozzeriaonline.model.bot.MessageData;
-import it.chrccl.carrozzeriaonline.model.dao.OtpCheck;
-import it.chrccl.carrozzeriaonline.model.dao.Partner;
-import it.chrccl.carrozzeriaonline.model.dao.Task;
-import it.chrccl.carrozzeriaonline.model.dao.TaskStatus;
+import it.chrccl.carrozzeriaonline.model.entities.OtpCheck;
+import it.chrccl.carrozzeriaonline.model.entities.Partner;
+import it.chrccl.carrozzeriaonline.model.entities.Task;
+import it.chrccl.carrozzeriaonline.model.entities.TaskStatus;
 import it.chrccl.carrozzeriaonline.services.OtpCheckService;
 import it.chrccl.carrozzeriaonline.services.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,12 +68,18 @@ public class OTPState implements BotState {
     public Boolean verifyMessage(Task task, MessageData data) {
         OtpCheck otp = otpCheckService.findMostRecentOtpCheckByTask(task);
         if(otp != null) {
-            Boolean isWrong = !bulkGateComponent.verifyOtp(otp.getOtpId(), data.getMessageBody());
-            if(!isWrong){
-                otp.setConfirmed(true);
-                otpCheckService.saveOtpCheck(otp);
+            if(LocalDateTime.now().minusMinutes(15).isBefore(otp.getTimestamp()) || task.getIsWeb()) {
+                Boolean isWrong = !bulkGateComponent.verifyOtp(otp.getOtpId(), data.getMessageBody());
+                if (!isWrong) {
+                    otp.setConfirmed(true);
+                    otpCheckService.saveOtpCheck(otp);
+                }
+                return isWrong;
+            }else{
+                taskService.delete(task);
+                data.setMessageBody(Constants.EXPIRED);
+                return true;
             }
-            return isWrong;
         }else{
             return true;
         }
@@ -81,15 +87,19 @@ public class OTPState implements BotState {
 
     @Override
     public void handleError(BotContext context, String fromNumber, MessageData data) {
-        OtpCheck otp = otpCheckService.findMostRecentOtpCheckByTask(context.getTask());
         PhoneNumber to = new PhoneNumber(fromNumber);
-        if(otp != null) {
-            bulkGateComponent.resendOtp(otp.getOtpId());
-            twilio.sendMessage(to, Constants.BOT_FALLBACK_SENDING_OTP_MESSAGE);
+        if(data.getMessageBody().equals(Constants.EXPIRED)) {
+            twilio.sendMessage(to, Constants.BOT_FALLBACK_EXPIRED_OTP_MESSAGE);
         }else{
-            String otpId = bulkGateComponent.sendOtp(extractPhoneNumber(fromNumber));
-            otpCheckService.saveOtpCheck(new OtpCheck(LocalDateTime.now(), otpId, context.getTask(), false));
-            twilio.sendMessage(to, Constants.BOT_FALLBACK_SENDING_OTP_MESSAGE);
+            OtpCheck otp = otpCheckService.findMostRecentOtpCheckByTask(context.getTask());
+            if(otp != null) {
+                bulkGateComponent.resendOtp(otp.getOtpId());
+                twilio.sendMessage(to, Constants.BOT_FALLBACK_SENDING_OTP_MESSAGE);
+            }else{
+                String otpId = bulkGateComponent.sendOtp(extractPhoneNumber(fromNumber));
+                otpCheckService.saveOtpCheck(new OtpCheck(LocalDateTime.now(), otpId, context.getTask(), false));
+                twilio.sendMessage(to, Constants.BOT_FALLBACK_SENDING_OTP_MESSAGE);
+            }
         }
     }
 

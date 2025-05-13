@@ -2,7 +2,7 @@ package it.chrccl.carrozzeriaonline.controllers;
 
 import it.chrccl.carrozzeriaonline.components.IOComponent;
 import it.chrccl.carrozzeriaonline.model.Constants;
-import it.chrccl.carrozzeriaonline.model.dao.RepairCenter;
+import it.chrccl.carrozzeriaonline.model.entities.RepairCenter;
 import it.chrccl.carrozzeriaonline.services.RepairCenterService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

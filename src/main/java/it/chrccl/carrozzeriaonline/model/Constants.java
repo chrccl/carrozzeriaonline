@@ -40,6 +40,8 @@ public class Constants {
 
     public static final String BOT_CAR_LICENCE_MESSAGE = "Scrivi la *TARGA* della tua auto.";
 
+    public static final String EXPIRED = "EXPIRED";
+
     public static final String BOT_SENDING_OTP_MESSAGE =
             """
             Ti abbiamo inviato un codice via SMS valido 15 minuti. Scrivilo qui in chat per autorizzarci al trattamento dei dati da te forniti a fini esclusivamente identificativi e per confermare di voler delegare i nostri partner al recupero dei crediti relativi ai danni subiti senza alcun costo a tuo carico. Se non ti è arrivato, scrivi *RINVIA* in chat.
@@ -50,11 +52,15 @@ public class Constants {
 
     public static final String BOT_FALLBACK_SENDING_OTP_MESSAGE =
             """
-            Il codice che ci hai fornito non è errato o scaduto. Ti abbiamo inviato nuovamente un codice via SMS valido 15 minuti. Scrivilo qui in chat per autorizzarci al trattamento dei dati da te forniti a fini esclusivamente identificativi e per confermare di voler delegare i nostri partner al recupero dei crediti relativi ai danni subiti senza alcun costo a tuo carico. Se non ti è arrivato, scrivi *RINVIA* in chat.
+            Il codice che ci hai fornito è errato o scaduto. Ti abbiamo inviato nuovamente un codice via SMS valido 15 minuti. Scrivilo qui in chat per autorizzarci al trattamento dei dati da te forniti a fini esclusivamente identificativi e per confermare di voler delegare i nostri partner al recupero dei crediti relativi ai danni subiti senza alcun costo a tuo carico. Se non ti è arrivato, scrivi *RINVIA* in chat.
             In caso di concorsualità o torto nella dinamica del sinistro o decurtazioni dovute a scoperti e franchigie, potrai comunque concordare con il riparatore costi e modalità dell'intervento alle migliori condizioni a te riservate, con auto sostitutiva, ritiro e consegna a domicilio e lavaggio del veicolo.
             Visita www.carrozzeriaonline.com/privacy-policy per leggere l'informativa sulla privacy.
             """;
 
+    public static final String BOT_FALLBACK_EXPIRED_OTP_MESSAGE =
+            """
+            ⚠️ Il tempo limite per completare l'incarico è scaduto. Se desideri ricominciare, scrivi AVVIA in chat per ripartire da capo.
+            """;
 
     public static final String BOT_CAP_MESSAGE = "Scrivi il tuo *CAP* per individuare la carrozzeria più vicina a te.";
 

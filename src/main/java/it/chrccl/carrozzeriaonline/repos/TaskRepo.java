@@ -1,7 +1,7 @@
 package it.chrccl.carrozzeriaonline.repos;
 
-import it.chrccl.carrozzeriaonline.model.dao.Task;
-import it.chrccl.carrozzeriaonline.model.dao.TaskStatus;
+import it.chrccl.carrozzeriaonline.model.entities.Task;
+import it.chrccl.carrozzeriaonline.model.entities.TaskStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -22,5 +22,6 @@ public interface TaskRepo extends JpaRepository<Task, LocalDateTime> {
             @Param("excludedStatuses") List<TaskStatus> excludedStatuses
     );
 
+    void deleteByCreatedAt(LocalDateTime createdAt);
 
 }

@@ -1,8 +1,8 @@
 package it.chrccl.carrozzeriaonline.services;
 
-import it.chrccl.carrozzeriaonline.model.dao.Task;
-import it.chrccl.carrozzeriaonline.model.dao.TaskStatus;
-import it.chrccl.carrozzeriaonline.model.dao.User;
+import it.chrccl.carrozzeriaonline.model.entities.Task;
+import it.chrccl.carrozzeriaonline.model.entities.TaskStatus;
+import it.chrccl.carrozzeriaonline.model.entities.User;
 import it.chrccl.carrozzeriaonline.repos.TaskRepo;
 import it.chrccl.carrozzeriaonline.repos.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,6 +54,10 @@ public class TaskService {
         }
 
         return repo.save(task);
+    }
+
+    public void delete(Task task) {
+        repo.deleteByCreatedAt(task.getCreatedAt());
     }
 
 }

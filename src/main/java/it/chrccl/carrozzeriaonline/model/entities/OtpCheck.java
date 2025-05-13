@@ -1,24 +1,30 @@
-package it.chrccl.carrozzeriaonline.model.dao;
+package it.chrccl.carrozzeriaonline.model.entities;
 
-import jakarta.persistence.Embeddable;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Embeddable
+import java.time.LocalDateTime;
+
+@Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class BRCPerTaskId {
+public class OtpCheck {
+
+    @Id
+    private LocalDateTime timestamp;
+
+    private String otpId;
 
     @ManyToOne
     @JoinColumn(name = "task_created_at", referencedColumnName = "created_at")
     private Task task;
 
-    @ManyToOne
-    @JoinColumn(name = "repair_center_id")
-    private RepairCenter repairCenter;
+    private Boolean confirmed;
 
 }
