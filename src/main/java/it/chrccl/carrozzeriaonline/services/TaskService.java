@@ -5,6 +5,7 @@ import it.chrccl.carrozzeriaonline.model.entities.TaskStatus;
 import it.chrccl.carrozzeriaonline.model.entities.User;
 import it.chrccl.carrozzeriaonline.repos.TaskRepo;
 import it.chrccl.carrozzeriaonline.repos.UserRepo;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -56,6 +57,7 @@ public class TaskService {
         return repo.save(task);
     }
 
+    @Transactional
     public void delete(Task task) {
         repo.deleteByCreatedAt(task.getCreatedAt());
     }
