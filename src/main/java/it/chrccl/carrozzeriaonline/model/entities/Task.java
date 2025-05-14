@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Data
@@ -35,5 +36,14 @@ public class Task {
     private Boolean isWeb;
 
     private Boolean accepted;
+
+    @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Attachment> attachments;
+
+    @OneToMany(mappedBy = "BRCPerTaskId.task", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<BRCPerTask> brcPerTasks;
+
+    @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<OtpCheck> otpChecks;
 
 }
